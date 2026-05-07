@@ -1,0 +1,55 @@
+@page
+@model MyCMS.Web.Areas.Admin.Pages.Pages.IndexModel
+@{
+    ViewData["Title"] = "Pages";
+    Layout = "_AdminLayout";
+}
+
+<h1>Pages</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New Page</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Page Title</th>
+            <th>Page URL</th>
+            <th>Is Home Page</th>
+            <th>View Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Pages != null)
+        {
+            @foreach (var page in Model.Pages)
+            {
+                <tr>
+                    <td>@page.PageTitle</td>
+                    <td>@page.PageURL</td>
+                    <td>
+                        @if (page.IsHomePage)
+                        {
+                            <span class="badge bg-success">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">No</span>
+                        }
+                    </td>
+                    <td>@page.ViewCount</td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@page.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-page="./Delete" asp-route-id="@page.Id" class="btn btn-sm btn-danger">Delete</a>
+                        @if (!page.IsHomePage)
+                        {
+                            <a asp-page="./SetHome" asp-route-id="@page.Id" class="btn btn-sm btn-warning">Set as Home</a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="MyCMS.Core/MyCMS.Core.csproj" />
+  <Project Path="MyCMS.Data/MyCMS.Data.csproj" />
+  <Project Path="MyCMS.Services/MyCMS.Services.csproj" />
+  <Project Path="MyCMS.Tests/MyCMS.Tests.csproj" />
+  <Project Path="MyCMS.Web/MyCMS.Web.csproj" />
+</Solution>

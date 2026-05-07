@@ -1,0 +1,24 @@
+@page "{url}"
+@model MyCMS.Web.Pages.PageModel
+@{
+    ViewData["Title"] = Model.Page?.PageTitle ?? "Page";
+    Layout = "_Layout";
+}
+
+@if (Model.Page != null)
+{
+    <div class="container mt-4">
+        <h1>@Model.Page.PageTitle</h1>
+        <div class="content">
+            @Html.Raw(Model.Page.PageBody)
+        </div>
+    </div>
+}
+else
+{
+    <div class="container mt-4">
+        <h1>Page Not Found</h1>
+    <p>The page you're looking for doesn't exist or has been deleted.</p>
+    <a asp-page="/Index" class="btn btn-primary">Back to Home</a>
+    </div>
+}

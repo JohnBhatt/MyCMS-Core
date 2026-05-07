@@ -1,0 +1,42 @@
+@page "{quizId}"
+@model MyCMS.Web.Areas.Admin.Pages.Quizzes.QuestionsModel
+@{
+    ViewData["Title"] = "Quiz Questions";
+    Layout = "_AdminLayout";
+}
+
+<h1>Quiz Questions</h1>
+
+<p>
+    <a asp-page="./CreateQuestion" asp-route-quizId="@Model.QuizId" class="btn btn-primary">Add Question</a>
+    <a asp-page="./Index" class="btn btn-secondary">Back to Quizzes</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Question Text</th>
+            <th>Type</th>
+            <th>Order</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Questions != null)
+        {
+            @foreach (var question in Model.Questions)
+            {
+                <tr>
+                    <td>@question.QuestionText</td>
+                    <td>@question.QuestionType</td>
+                    <td>@question.QuestionOrder</td>
+                    <td>
+                        <a asp-page="./EditQuestion" asp-route-id="@question.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-page="./DeleteQuestion" asp-route-id="@question.Id" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-page="./Options" asp-route-questionId="@question.Id" class="btn btn-sm btn-info">Options</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

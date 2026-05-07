@@ -1,0 +1,44 @@
+@page "{id}"
+@model MyCMS.Web.Areas.Admin.Pages.OpenGraphTags.EditModel
+@{
+    ViewData["Title"] = "Edit OpenGraph Tag";
+    Layout = "_AdminLayout";
+}
+
+<h1>Edit OpenGraph Tag</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Tag.Id" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Tag.TagName" class="control-label"></label>
+                <input asp-for="Tag.TagName" class="form-control" required />
+                <span asp-validation-for="Tag.TagName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Tag.TagProperty" class="control-label">Property</label>
+                <input asp-for="Tag.TagProperty" class="form-control" placeholder="e.g., og:title, og:description" />
+                <span asp-validation-for="Tag.TagProperty" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Tag.TagContent" class="control-label">Content</label>
+                <textarea asp-for="Tag.TagContent" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="form-group mb-3 form-check">
+                <input class="form-check-input" asp-for="Tag.Visibility" />
+                <label class="form-check-label" asp-for="Tag.Visibility">Visible</label>
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

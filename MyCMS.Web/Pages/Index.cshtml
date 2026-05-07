@@ -1,0 +1,52 @@
+﻿@page
+@model MyCMS.Web.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home";
+    Layout = "_Layout";
+}
+
+@await Component.InvokeAsync("Menu", new { position = "Main" })
+
+@if (Model.HomePage != null)
+{
+    <div class="container mt-4">
+        <h1>@Model.HomePage.PageTitle</h1>
+        <div class="content">
+            @Html.Raw(Model.HomePage.PageBody)
+        </div>
+    </div>
+}
+else
+{
+    <div class="container mt-4">
+        <h1>Welcome to MyCMS</h1>
+        <p>Your content management system is ready. Please set a homepage in the admin panel.</p>
+        <a asp-area="Admin" asp-page="/Index" class="btn btn-primary">Go to Admin</a>
+    </div>
+}
+
+@if (Model.FeaturedArticles != null && Model.FeaturedArticles.Any())
+{
+    <div class="container mt-5">
+        <h2>Featured Articles</h2>
+        <div class="row">
+            @foreach (var article in Model.FeaturedArticles)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        @if (!string.IsNullOrEmpty(article.FeaturedImage))
+                        {
+                            <img src="@article.FeaturedImage" class="card-img-top" alt="@article.Title">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a asp-page="/Articles/Details" asp-route-slug="@article.Slug">@article.Title</a>
+                            </h5>
+                            <p class="card-text">@article.MetaDescription</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

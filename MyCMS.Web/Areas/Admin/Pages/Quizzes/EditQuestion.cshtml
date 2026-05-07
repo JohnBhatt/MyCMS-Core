@@ -1,0 +1,44 @@
+@page "{id}"
+@model MyCMS.Web.Areas.Admin.Pages.Quizzes.EditQuestionModel
+@{
+    ViewData["Title"] = "Edit Question";
+    Layout = "_AdminLayout";
+}
+
+<h1>Edit Question</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Question.Id" />
+            <input type="hidden" asp-for="Question.QuizId" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Question.QuestionText" class="control-label"></label>
+                <textarea asp-for="Question.QuestionText" class="form-control" rows="3" required></textarea>
+                <span asp-validation-for="Question.QuestionText" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Question.QuestionType" class="control-label">Question Type</label>
+                <select asp-for="Question.QuestionType" class="form-control" required>
+                    <option value="SingleChoice">Single Choice</option>
+                    <option value="MultipleChoice">Multiple Choice</option>
+                    <option value="TrueFalse">True/False</option>
+                </select>
+                <span asp-validation-for="Question.QuestionType" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Question.QuestionOrder" class="control-label">Order</label>
+                <input asp-for="Question.QuestionOrder" type="number" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="./Questions" asp-route-quizId="@Model.Question.QuizId" class="btn btn-secondary">Back to Questions</a>
+            </div>
+        </form>
+    </div>
+</div>

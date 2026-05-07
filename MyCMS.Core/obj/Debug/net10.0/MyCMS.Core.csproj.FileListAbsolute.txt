@@ -1,0 +1,12 @@
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\obj\Debug\net10.0\MyCMS.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\obj\Debug\net10.0\MyCMS.Core.AssemblyInfoInputs.cache
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\obj\Debug\net10.0\MyCMS.Core.AssemblyInfo.cs
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\obj\Debug\net10.0\MyCMS.Core.csproj.CoreCompileInputs.cache
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\obj\Debug\net10.0\MyCMS.Core.csproj.AssemblyReference.cache
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\bin\Debug\net10.0\MyCMS.Core.deps.json
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\bin\Debug\net10.0\MyCMS.Core.dll
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\bin\Debug\net10.0\MyCMS.Core.pdb
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\obj\Debug\net10.0\MyCMS.Core.dll
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\obj\Debug\net10.0\refint\MyCMS.Core.dll
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\obj\Debug\net10.0\MyCMS.Core.pdb
+C:\Users\Yogita\OneDrive\Code\MyCMS-New\MyCMS.Core\obj\Debug\net10.0\ref\MyCMS.Core.dll

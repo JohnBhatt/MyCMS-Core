@@ -1,0 +1,38 @@
+@page "{slug}"
+@model MyCMS.Web.Pages.Articles.DetailsModel
+@{
+    ViewData["Title"] = Model.Article?.Title ?? "Article";
+    Layout = "_Layout";
+}
+
+@if (Model.Article != null)
+{
+    <div class="container mt-4">
+        <article>
+            <h1>@Model.Article.Title</h1>
+            <p class="text-muted">
+                Published: @Model.Article.PublishedDate?.ToString("MMMM dd, yyyy") | Views: @Model.Article.ViewCount
+            </p>
+            @if (!string.IsNullOrEmpty(Model.Article.FeaturedImage))
+            {
+                <img src="@Model.Article.FeaturedImage" class="img-fluid mb-4" alt="@Model.Article.Title">
+            }
+            <div class="content">
+                @Html.Raw(Model.Article.Content)
+            </div>
+        </article>
+    </div>
+
+    @if (Model.AmpHtml != null)
+    {
+        <link rel="amphtml" href="@Model.Article.Slug/amp" />
+    }
+}
+else
+{
+    <div class="container mt-4">
+        <h1>Article Not Found</h1>
+        <p>The article you're looking for doesn't exist or has been deleted.</p>
+        <a asp-page="/Index" class="btn btn-primary">Back to Home</a>
+    </div>
+}

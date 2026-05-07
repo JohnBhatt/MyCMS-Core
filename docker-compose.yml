@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mycms-web:
+    build: .
+    container_name: mycms-web
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DatabaseProvider=PostgreSQL
+      - ConnectionStrings__PostgreSQL=Host=postgres;Port=5432;Database=mycms;Username=postgres;Password=your_secure_password
+    depends_on:
+      - postgres
+    volumes:
+      - ./uploads:/app/wwwroot/uploads
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    container_name: mycms-postgres
+    environment:
+      - POSTGRES_DB=mycms
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your_secure_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
