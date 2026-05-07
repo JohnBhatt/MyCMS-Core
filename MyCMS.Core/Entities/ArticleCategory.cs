@@ -10,7 +10,7 @@ namespace MyCMS.Core.Entities
 
         public string CatDesc { get; set; }
         public Guid? ParentCategory { get; set; }
-        public string CategoryImage { get; set; }
+        public string? CategoryImage { get; set; }
         public string Slug { get; set; }
     }
 }

@@ -56,6 +56,25 @@ namespace MyCMS.Data
                 .HasForeignKey(a => a.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Configure DateTime properties for PostgreSQL
+            modelBuilder.Entity<Article>()
+                .Property(a => a.FeaturedFrom)
+                .HasConversion(
+                    v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : (DateTime?)null,
+                    v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : (DateTime?)null);
+
+            modelBuilder.Entity<Article>()
+                .Property(a => a.FeaturedUpto)
+                .HasConversion(
+                    v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : (DateTime?)null,
+                    v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : (DateTime?)null);
+
+            modelBuilder.Entity<Article>()
+                .Property(a => a.PublishedDate)
+                .HasConversion(
+                    v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : (DateTime?)null,
+                    v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : (DateTime?)null);
+
             // Configure ArticleCategory self-referencing
             modelBuilder.Entity<ArticleCategory>()
                 .HasOne<ArticleCategory>()

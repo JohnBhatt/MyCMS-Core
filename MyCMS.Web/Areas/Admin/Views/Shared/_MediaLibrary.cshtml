@@ -1,0 +1,258 @@
+@model List<MyCMS.Core.Entities.Upload>
+
+@{
+    var uploads = Model ?? ViewData["Uploads"] as List<MyCMS.Core.Entities.Upload>;
+}
+
+<!-- Media Library Modal -->
+<div class="modal fade" id="mediaLibraryModal" tabindex="-1" aria-labelledby="mediaLibraryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mediaLibraryModalLabel">
+                    <i class="bi bi-images me-2"></i>Media Library
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Search and Upload Section -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="mediaSearchInput" placeholder="Search files...">
+                            <button class="btn btn-outline-secondary" type="button" id="mediaSearchBtn">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-primary w-100" type="button" id="showUploadFormBtn">
+                            <i class="bi bi-plus-circle me-1"></i>Upload New File
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upload Form (Hidden by default) -->
+                <div class="card mb-3" id="uploadFormCard" style="display: none;">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3">Upload File with Metadata</h6>
+                        <div class="mb-3">
+                            <label class="form-label">File *</label>
+                            <input type="file" class="form-control" id="mediaUploadInput" accept="image/*" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Custom File Name</label>
+                            <input type="text" class="form-control" id="customFileName" placeholder="Leave empty to use original filename">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Alt Text (for images)</label>
+                            <input type="text" class="form-control" id="altText" placeholder="Describe the image for accessibility">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="fileDescription" rows="2" placeholder="File description..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Folder</label>
+                            <select class="form-select" id="uploadFolder">
+                                <option value="uploads">uploads</option>
+                                <option value="categories">categories</option>
+                                <option value="articles">articles</option>
+                            </select>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" type="button" id="mediaUploadBtn">
+                                <i class="bi bi-upload me-1"></i>Upload
+                            </button>
+                            <button class="btn btn-secondary" type="button" id="cancelUploadBtn">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Type Filter -->
+                <div class="btn-group mb-3" role="group">
+                    <button type="button" class="btn btn-outline-secondary active" data-filter="all">All</button>
+                    <button type="button" class="btn btn-outline-secondary" data-filter="image">Images</button>
+                    <button type="button" class="btn btn-outline-secondary" data-filter="document">Documents</button>
+                </div>
+
+                <!-- Media Grid -->
+                <div class="row" id="mediaGrid">
+                    @if (uploads != null && uploads.Any())
+                    {
+                        @foreach (var upload in uploads)
+                        {
+                            <div class="col-md-3 col-sm-4 col-6 mb-3 media-item" 
+                                 data-file-id="@upload.Id" 
+                                 data-file-path="@upload.FilePath" 
+                                 data-file-name="@upload.DocumentName"
+                                 data-file-type="@upload.DocumentType">
+                                <div class="card media-card h-100 cursor-pointer" onclick="selectMediaFile('@upload.Id', '@upload.FilePath')">
+                                    @if (upload.DocumentType?.StartsWith("image/") == true)
+                                    {
+                                        <img src="@upload.FilePath" class="card-img-top" alt="@upload.DocumentName" style="height: 150px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 150px;">
+                                            <i class="bi bi-file-earmark fs-1 text-muted"></i>
+                                        </div>
+                                    }
+                                    <div class="card-body p-2">
+                                        <small class="text-truncate d-block" title="@upload.DocumentName">@upload.DocumentName</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12 text-center text-muted py-5" id="emptyState">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mt-2">No files found. Upload some files to get started.</p>
+                        </div>
+                    }
+                </div>
+                
+                <!-- Upload Progress -->
+                <div class="alert alert-info mt-3" id="uploadProgress" style="display: none;">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        <span>Uploading...</span>
+                    </div>
+                </div>
+                
+                <!-- Upload Error -->
+                <div class="alert alert-danger mt-3" id="uploadError" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="selectMediaBtn" disabled>Select File</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .media-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 2px solid transparent;
+    }
+    .media-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .media-card.selected {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+    }
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    // Show/hide upload form
+    document.getElementById('showUploadFormBtn').addEventListener('click', function() {
+        document.getElementById('uploadFormCard').style.display = 'block';
+        document.getElementById('showUploadFormBtn').style.display = 'none';
+    });
+
+    document.getElementById('cancelUploadBtn').addEventListener('click', function() {
+        document.getElementById('uploadFormCard').style.display = 'none';
+        document.getElementById('showUploadFormBtn').style.display = 'block';
+        // Clear form
+        document.getElementById('mediaUploadInput').value = '';
+        document.getElementById('customFileName').value = '';
+        document.getElementById('altText').value = '';
+        document.getElementById('fileDescription').value = '';
+    });
+
+    document.getElementById('mediaUploadBtn').addEventListener('click', function() {
+        const fileInput = document.getElementById('mediaUploadInput');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            alert('Please select a file to upload.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', document.getElementById('uploadFolder').value);
+        formData.append('customFileName', document.getElementById('customFileName').value || '');
+        formData.append('altText', document.getElementById('altText').value || '');
+        formData.append('description', document.getElementById('fileDescription').value || '');
+
+        const progressDiv = document.getElementById('uploadProgress');
+        const errorDiv = document.getElementById('uploadError');
+        const emptyState = document.getElementById('emptyState');
+
+        progressDiv.style.display = 'block';
+        errorDiv.style.display = 'none';
+
+        fetch('/Admin/Files/UploadAjax', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            progressDiv.style.display = 'none';
+            
+            if (data.success) {
+                // Hide upload form
+                document.getElementById('uploadFormCard').style.display = 'none';
+                document.getElementById('showUploadFormBtn').style.display = 'block';
+                
+                // Clear form
+                fileInput.value = '';
+                document.getElementById('customFileName').value = '';
+                document.getElementById('altText').value = '';
+                document.getElementById('fileDescription').value = '';
+
+                // Remove empty state if it exists
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+
+                // Create new media item
+                const mediaGrid = document.getElementById('mediaGrid');
+                const newItem = document.createElement('div');
+                newItem.className = 'col-md-3 col-sm-4 col-6 mb-3 media-item';
+                newItem.setAttribute('data-file-id', data.upload.id);
+                newItem.setAttribute('data-file-path', data.upload.filePath);
+                newItem.setAttribute('data-file-name', data.upload.documentName);
+                newItem.setAttribute('data-file-type', data.upload.documentType);
+
+                let cardContent = '';
+                if (data.upload.documentType && data.upload.documentType.startsWith('image/')) {
+                    cardContent = `<img src="${data.upload.filePath}" class="card-img-top" alt="${data.upload.altText || data.upload.documentName}" style="height: 150px; object-fit: cover;">`;
+                } else {
+                    cardContent = `<div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 150px;"><i class="bi bi-file-earmark fs-1 text-muted"></i></div>`;
+                }
+
+                newItem.innerHTML = `
+                    <div class="card media-card h-100 cursor-pointer" onclick="selectMediaFile('${data.upload.id}', '${data.upload.filePath}')">
+                        ${cardContent}
+                        <div class="card-body p-2">
+                            <small class="text-truncate d-block" title="${data.upload.documentName}">${data.upload.documentName}</small>
+                        </div>
+                    </div>
+                `;
+
+                mediaGrid.insertBefore(newItem, mediaGrid.firstChild);
+                
+                // Auto-select the newly uploaded file
+                selectMediaFile(data.upload.id, data.upload.filePath);
+            } else {
+                errorDiv.textContent = data.message || 'Upload failed.';
+                errorDiv.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            progressDiv.style.display = 'none';
+            errorDiv.textContent = 'Upload failed: ' + error.message;
+            errorDiv.style.display = 'block';
+        });
+    });
+</script>

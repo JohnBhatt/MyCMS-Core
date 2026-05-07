@@ -31,6 +31,8 @@ namespace MyCMS.Web.Areas.Admin.Controllers
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
+            var uploads = await _fileService.GetAllUploadsAsync();
+            ViewData["Uploads"] = uploads;
             return View(new Article());
         }
 
@@ -42,6 +44,8 @@ namespace MyCMS.Web.Areas.Admin.Controllers
             {
                 var categories = await _categoryService.GetAllCategoriesAsync();
                 ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
+                var uploads = await _fileService.GetAllUploadsAsync();
+                ViewData["Uploads"] = uploads;
                 return View(article);
             }
 
@@ -70,6 +74,8 @@ namespace MyCMS.Web.Areas.Admin.Controllers
 
             var categories = await _categoryService.GetAllCategoriesAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
+            var uploads = await _fileService.GetAllUploadsAsync();
+            ViewData["Uploads"] = uploads;
             return View(article);
         }
 
@@ -81,6 +87,8 @@ namespace MyCMS.Web.Areas.Admin.Controllers
             {
                 var categories = await _categoryService.GetAllCategoriesAsync();
                 ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
+                var uploads = await _fileService.GetAllUploadsAsync();
+                ViewData["Uploads"] = uploads;
                 return View(article);
             }
 

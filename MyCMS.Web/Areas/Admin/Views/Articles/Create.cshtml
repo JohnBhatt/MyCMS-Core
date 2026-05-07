@@ -43,7 +43,13 @@
 
             <div class="form-group mb-3">
                 <label asp-for="Content" class="control-label">Content</label>
+                <div class="mb-2">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="toggleSourceBtn">
+                        <i class="bi bi-code-slash me-1"></i>View Source
+                    </button>
+                </div>
                 <div id="editor-container" style="height: 400px;"></div>
+                <textarea id="sourceEditor" class="form-control" style="height: 400px; display: none; font-family: monospace;"></textarea>
                 <input type="hidden" asp-for="Content" id="articleContent" />
             </div>
 
@@ -85,10 +91,87 @@
     </div>
 </div>
 
+@await Html.PartialAsync("_MediaLibrary", ViewData["Uploads"])
+
 @section Scripts {
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <script>
+        let selectedMediaFile = null;
+        let targetInputId = null;
+        let targetPreviewId = null;
+
+        function initMediaLibrary(inputId, previewId) {
+            targetInputId = inputId;
+            targetPreviewId = previewId;
+            selectedMediaFile = null;
+            document.getElementById('selectMediaBtn').disabled = true;
+            document.querySelectorAll('.media-card').forEach(card => card.classList.remove('selected'));
+        }
+
+        function selectMediaFile(fileId, filePath) {
+            selectedMediaFile = { id: fileId, path: filePath };
+            document.querySelectorAll('.media-card').forEach(card => card.classList.remove('selected'));
+            const selectedCard = document.querySelector(`[data-file-id="${fileId}"] .media-card`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+            document.getElementById('selectMediaBtn').disabled = false;
+        }
+
+        document.getElementById('selectMediaBtn').addEventListener('click', function() {
+            if (selectedMediaFile && targetInputId) {
+                document.getElementById(targetInputId).value = selectedMediaFile.path;
+                if (targetPreviewId) {
+                    const previewContainer = document.getElementById(targetPreviewId);
+                    const previewImg = previewContainer.querySelector('img');
+                    if (previewImg) {
+                        previewImg.src = selectedMediaFile.path;
+                        previewContainer.style.display = 'block';
+                    }
+                }
+                const modalElement = document.getElementById('mediaLibraryModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                } else {
+                    modalElement.classList.remove('show');
+                    document.body.classList.remove('modal-open');
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                }
+            }
+        });
+
+        document.getElementById('mediaSearchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.media-item').forEach(item => {
+                const fileName = item.dataset.fileName.toLowerCase();
+                item.style.display = fileName.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        document.querySelectorAll('[data-filter]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const filter = this.dataset.filter;
+                document.querySelectorAll('.media-item').forEach(item => {
+                    const fileType = item.dataset.fileType;
+                    if (filter === 'all') {
+                        item.style.display = '';
+                    } else if (filter === 'image') {
+                        item.style.display = fileType?.startsWith('image/') ? '' : 'none';
+                    } else if (filter === 'document') {
+                        item.style.display = !fileType?.startsWith('image/') ? '' : 'none';
+                    }
+                });
+            });
+        });
+
+        // Quill Editor
         var toolbarOptions = [
             [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
             ['bold', 'italic', 'underline', 'strike'],
@@ -106,8 +189,78 @@
             }
         });
 
+        // Initialize with existing content if present
+        var existingContent = document.getElementById('articleContent').value;
+        if (existingContent) {
+            quill.root.innerHTML = existingContent;
+            document.getElementById('sourceEditor').value = existingContent;
+        }
+
         quill.on('text-change', function() {
             document.getElementById('articleContent').value = quill.root.innerHTML;
+            document.getElementById('sourceEditor').value = quill.root.innerHTML;
+        });
+
+        // Toggle between visual and source editor
+        var isSourceMode = false;
+        document.getElementById('toggleSourceBtn').addEventListener('click', function() {
+            isSourceMode = !isSourceMode;
+            var editorContainer = document.getElementById('editor-container');
+            var sourceEditor = document.getElementById('sourceEditor');
+            var btn = document.getElementById('toggleSourceBtn');
+
+            if (isSourceMode) {
+                // Switch to source mode
+                sourceEditor.value = quill.root.innerHTML;
+                editorContainer.style.display = 'none';
+                sourceEditor.style.display = 'block';
+                btn.innerHTML = '<i class="bi bi-eye me-1"></i>Visual Editor';
+            } else {
+                // Switch to visual mode
+                quill.root.innerHTML = sourceEditor.value;
+                document.getElementById('articleContent').value = sourceEditor.value;
+                editorContainer.style.display = 'block';
+                sourceEditor.style.display = 'none';
+                btn.innerHTML = '<i class="bi bi-code-slash me-1"></i>View Source';
+            }
+        });
+
+        // Custom image handler to use media library
+        var toolbar = quill.getModule('toolbar');
+        toolbar.addHandler('image', function() {
+            targetInputId = null;
+            targetPreviewId = null;
+            selectedMediaFile = null;
+            document.getElementById('selectMediaBtn').disabled = true;
+            document.querySelectorAll('.media-card').forEach(card => card.classList.remove('selected'));
+            
+            // Override select button behavior for Quill
+            var selectBtn = document.getElementById('selectMediaBtn');
+            selectBtn.onclick = function() {
+                if (selectedMediaFile) {
+                    var range = quill.getSelection(true);
+                    quill.insertEmbed(range.index, 'image', selectedMediaFile.path);
+                    quill.setSelection(range.index + 1);
+                    
+                    const modalElement = document.getElementById('mediaLibraryModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    } else {
+                        modalElement.classList.remove('show');
+                        document.body.classList.remove('modal-open');
+                        const backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) {
+                            backdrop.remove();
+                        }
+                    }
+                    
+                    // Reset to default behavior
+                    selectBtn.onclick = null;
+                }
+            };
+            
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('mediaLibraryModal')).show();
         });
     </script>
 }

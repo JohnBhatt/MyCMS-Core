@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
 
@@ -31,9 +31,15 @@
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="CategoryImage" class="control-label">Category Image URL</label>
-                <input asp-for="CategoryImage" class="form-control" />
-                <span asp-validation-for="CategoryImage" class="text-danger"></span>
+                <label class="control-label">Category Image</label>
+                @{
+                    ViewData["InputId"] = "categoryImageUrl";
+                    ViewData["PreviewId"] = "imagePreviewContainer";
+                    ViewData["Label"] = "Category Image";
+                    ViewData["Accept"] = "image/*";
+                }
+                @await Html.PartialAsync("_FilePicker", Model.CategoryImage)
+                <input type="file" name="CategoryImageFile" class="form-control mt-2" accept="image/*" style="display: none;" />
             </div>
 
             <div class="form-group mb-3">
@@ -43,3 +49,83 @@
         </form>
     </div>
 </div>
+
+@await Html.PartialAsync("_MediaLibrary", ViewData["Uploads"])
+
+@section Scripts {
+    <script>
+        let selectedMediaFile = null;
+        let targetInputId = null;
+        let targetPreviewId = null;
+
+        function initMediaLibrary(inputId, previewId) {
+            targetInputId = inputId;
+            targetPreviewId = previewId;
+            selectedMediaFile = null;
+            document.getElementById('selectMediaBtn').disabled = true;
+            document.querySelectorAll('.media-card').forEach(card => card.classList.remove('selected'));
+        }
+
+        function selectMediaFile(fileId, filePath) {
+            selectedMediaFile = { id: fileId, path: filePath };
+            document.querySelectorAll('.media-card').forEach(card => card.classList.remove('selected'));
+            const selectedCard = document.querySelector(`[data-file-id="${fileId}"] .media-card`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+            document.getElementById('selectMediaBtn').disabled = false;
+        }
+
+        document.getElementById('selectMediaBtn').addEventListener('click', function() {
+            if (selectedMediaFile && targetInputId) {
+                document.getElementById(targetInputId).value = selectedMediaFile.path;
+                if (targetPreviewId) {
+                    const previewContainer = document.getElementById(targetPreviewId);
+                    const previewImg = previewContainer.querySelector('img');
+                    if (previewImg) {
+                        previewImg.src = selectedMediaFile.path;
+                        previewContainer.style.display = 'block';
+                    }
+                }
+                const modalElement = document.getElementById('mediaLibraryModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                } else {
+                    modalElement.classList.remove('show');
+                    document.body.classList.remove('modal-open');
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                }
+            }
+        });
+
+        document.getElementById('mediaSearchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.media-item').forEach(item => {
+                const fileName = item.dataset.fileName.toLowerCase();
+                item.style.display = fileName.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        document.querySelectorAll('[data-filter]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const filter = this.dataset.filter;
+                document.querySelectorAll('.media-item').forEach(item => {
+                    const fileType = item.dataset.fileType;
+                    if (filter === 'all') {
+                        item.style.display = '';
+                    } else if (filter === 'image') {
+                        item.style.display = fileType?.startsWith('image/') ? '' : 'none';
+                    } else if (filter === 'document') {
+                        item.style.display = !fileType?.startsWith('image/') ? '' : 'none';
+                    }
+                });
+            });
+        });
+    </script>
+}

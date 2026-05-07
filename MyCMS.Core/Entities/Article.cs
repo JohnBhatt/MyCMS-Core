@@ -23,7 +23,7 @@ namespace MyCMS.Core.Entities
         [MaxLength(2000)]
         public string MetaKeywords { get; set; }
 
-        public string FeaturedImage { get; set; }
+        public string? FeaturedImage { get; set; }
         public string Content { get; set; }
         public string Tags { get; set; }
         public long ViewCount { get; set; } = 0;

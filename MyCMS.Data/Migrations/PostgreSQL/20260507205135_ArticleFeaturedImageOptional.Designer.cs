@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyCMS.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MyCMS.Data.Migrations.PostgreSQL
+namespace MyCMS.Data.Migrations.PostgreSql
 {
     [DbContext(typeof(PostgreSqlDbContext))]
-    partial class PostgreSqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260507205135_ArticleFeaturedImageOptional")]
+    partial class ArticleFeaturedImageOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

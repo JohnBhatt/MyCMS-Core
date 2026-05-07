@@ -11,10 +11,12 @@ namespace MyCMS.Web.Areas.Admin.Controllers
     public class CategoriesController : Controller
     {
         private readonly ICategoryService _categoryService;
+        private readonly IFileService _fileService;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService, IFileService fileService)
         {
             _categoryService = categoryService;
+            _fileService = fileService;
         }
 
         public async Task<IActionResult> Index()
@@ -23,18 +25,28 @@ namespace MyCMS.Web.Areas.Admin.Controllers
             return View(categories);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var uploads = await _fileService.GetAllUploadsAsync();
+            ViewData["Uploads"] = uploads;
             return View(new ArticleCategory());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ArticleCategory category)
+        public async Task<IActionResult> Create(ArticleCategory category, IFormFile? CategoryImageFile)
         {
             if (!ModelState.IsValid)
             {
+                var uploads = await _fileService.GetAllUploadsAsync();
+                ViewData["Uploads"] = uploads;
                 return View(category);
+            }
+
+            if (CategoryImageFile != null)
+            {
+                var imagePath = await _fileService.SaveFileAsync(CategoryImageFile, "categories");
+                category.CategoryImage = imagePath;
             }
 
             await _categoryService.CreateCategoryAsync(category);
@@ -48,16 +60,26 @@ namespace MyCMS.Web.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            var uploads = await _fileService.GetAllUploadsAsync();
+            ViewData["Uploads"] = uploads;
             return View(category);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, ArticleCategory category)
+        public async Task<IActionResult> Edit(Guid id, ArticleCategory category, IFormFile? CategoryImageFile)
         {
             if (!ModelState.IsValid)
             {
+                var uploads = await _fileService.GetAllUploadsAsync();
+                ViewData["Uploads"] = uploads;
                 return View(category);
+            }
+
+            if (CategoryImageFile != null)
+            {
+                var imagePath = await _fileService.SaveFileAsync(CategoryImageFile, "categories");
+                category.CategoryImage = imagePath;
             }
 
             await _categoryService.UpdateCategoryAsync(category);

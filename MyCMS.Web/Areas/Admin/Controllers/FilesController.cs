@@ -49,6 +49,36 @@ namespace MyCMS.Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadAjax(IFormFile file, string folder = "uploads", string customFileName = "", string altText = "", string description = "")
+        {
+            if (file == null || file.Length == 0)
+            {
+                return Json(new { success = false, message = "Please select a file to upload." });
+            }
+
+            try
+            {
+                var filePath = await _fileService.SaveFileAsync(file, folder);
+                
+                var upload = new Upload
+                {
+                    DocumentName = string.IsNullOrEmpty(customFileName) ? file.FileName : customFileName,
+                    FilePath = filePath,
+                    UniqueName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
+                    DocumentType = file.ContentType ?? "application/octet-stream",
+                    FileDesc = !string.IsNullOrEmpty(description) ? description : (!string.IsNullOrEmpty(altText) ? $"Alt: {altText}" : "")
+                };
+
+                await _fileService.UploadFileAsync(upload);
+                return Json(new { success = true, upload = new { id = upload.Id, filePath = upload.FilePath, documentName = upload.DocumentName, documentType = upload.DocumentType, altText = altText } });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.InnerException?.Message ?? ex.Message });
+            }
+        }
+
         public async Task<IActionResult> Delete(Guid id)
         {
             var upload = await _fileService.GetUploadByIdAsync(id);
