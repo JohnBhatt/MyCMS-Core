@@ -93,9 +93,23 @@
 </div>
 
 @section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
     <script>
+        var toolbarOptions = [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['link', 'image', 'video'],
+            ['clean']
+        ];
+
         var quill = new Quill('#editor-container', {
-            theme: 'snow'
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            }
         });
 
         quill.root.innerHTML = document.getElementById('articleContent').value;

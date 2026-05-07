@@ -71,6 +71,7 @@ else
 // Register services
 builder.Services.AddScoped<IPageService, PageService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IQuizService, QuizService>();

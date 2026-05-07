@@ -12,11 +12,13 @@ namespace MyCMS.Web.Areas.Admin.Controllers
     {
         private readonly IArticleService _articleService;
         private readonly IFileService _fileService;
+        private readonly ICategoryService _categoryService;
 
-        public ArticlesController(IArticleService articleService, IFileService fileService)
+        public ArticlesController(IArticleService articleService, IFileService fileService, ICategoryService categoryService)
         {
             _articleService = articleService;
             _fileService = fileService;
+            _categoryService = categoryService;
         }
 
         public async Task<IActionResult> Index()
@@ -25,13 +27,10 @@ namespace MyCMS.Web.Areas.Admin.Controllers
             return View(articles);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = new SelectList(new List<SelectListItem>
-            {
-                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Category 1" },
-                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Category 2" }
-            }, "Value", "Text");
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
             return View(new Article());
         }
 
@@ -41,11 +40,8 @@ namespace MyCMS.Web.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Categories = new SelectList(new List<SelectListItem>
-                {
-                    new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Category 1" },
-                    new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Category 2" }
-                }, "Value", "Text");
+                var categories = await _categoryService.GetAllCategoriesAsync();
+                ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
                 return View(article);
             }
 
@@ -72,11 +68,8 @@ namespace MyCMS.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            ViewBag.Categories = new SelectList(new List<SelectListItem>
-            {
-                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Category 1" },
-                new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Category 2" }
-            }, "Value", "Text");
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
             return View(article);
         }
 
@@ -86,11 +79,8 @@ namespace MyCMS.Web.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Categories = new SelectList(new List<SelectListItem>
-                {
-                    new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Category 1" },
-                    new SelectListItem { Value = Guid.NewGuid().ToString(), Text = "Category 2" }
-                }, "Value", "Text");
+                var categories = await _categoryService.GetAllCategoriesAsync();
+                ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
                 return View(article);
             }
 
