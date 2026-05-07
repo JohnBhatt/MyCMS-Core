@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using MyCMS.Core.Entities;
 
 namespace MyCMS.Core.Interfaces

@@ -1,0 +1,41 @@
+@model MyCMS.Core.Entities.Quiz
+@{
+    ViewData["Title"] = "Quiz Questions";
+    Layout = "_AdminLayout";
+}
+
+<h1>Quiz Questions</h1>
+
+<p>
+    <a asp-action="CreateQuestion" asp-route-quizId="@Model.Id" class="btn btn-primary">Add Question</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to Quizzes</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Question Text</th>
+            <th>Type</th>
+            <th>Order</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Questions != null)
+        {
+            @foreach (var question in Model.Questions)
+            {
+                <tr>
+                    <td>@question.QuestionText</td>
+                    <td>@question.QuestionType</td>
+                    <td>@question.QuestionOrder</td>
+                    <td>
+                        <a asp-action="EditQuestion" asp-route-id="@question.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="DeleteQuestion" asp-route-id="@question.Id" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-action="Options" asp-route-questionId="@question.Id" class="btn btn-sm btn-info">Options</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

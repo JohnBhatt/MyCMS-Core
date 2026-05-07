@@ -1,0 +1,46 @@
+@model List<MyCMS.Core.Entities.Upload>
+@{
+    ViewData["Title"] = "Files";
+    Layout = "_AdminLayout";
+}
+
+<h1>Files</h1>
+
+<p>
+    <a asp-action="Upload" class="btn btn-primary">Upload New File</a>
+</p>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Document Name</th>
+                        <th>Type</th>
+                        <th>File Path</th>
+                        <th>View Count</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        @foreach (var upload in Model)
+                        {
+                            <tr>
+                                <td>@upload.DocumentName</td>
+                                <td>@upload.DocumentType</td>
+                                <td>@upload.FilePath</td>
+                                <td>@upload.ViewCount</td>
+                                <td>
+                                    <a asp-action="Delete" asp-route-id="@upload.Id" class="btn btn-sm btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

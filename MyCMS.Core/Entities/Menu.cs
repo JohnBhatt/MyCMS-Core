@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace MyCMS.Core.Entities
 {
@@ -14,5 +15,7 @@ namespace MyCMS.Core.Entities
 
         [MaxLength(200)]
         public string MenuDesc { get; set; }
+
+        public List<MenuItem> MenuItems { get; set; } = new();
     }
 }

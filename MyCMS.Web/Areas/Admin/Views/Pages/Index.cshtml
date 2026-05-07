@@ -1,0 +1,54 @@
+@model List<MyCMS.Core.Entities.Page>
+@{
+    ViewData["Title"] = "Pages";
+    Layout = "_AdminLayout";
+}
+
+<h1>Pages</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Page</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Page Title</th>
+            <th>Page URL</th>
+            <th>Is Home Page</th>
+            <th>View Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.PageTitle</td>
+                    <td>@p.PageURL</td>
+                    <td>
+                        @if (p.IsHomePage)
+                        {
+                            <span class="badge bg-success">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">No</span>
+                        }
+                    </td>
+                    <td>@p.ViewCount</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-sm btn-danger">Delete</a>
+                        @if (!p.IsHomePage)
+                        {
+                            <a asp-action="SetHome" asp-route-id="@p.Id" class="btn btn-sm btn-warning">Set as Home</a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

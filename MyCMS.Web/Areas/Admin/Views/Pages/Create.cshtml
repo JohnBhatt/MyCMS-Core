@@ -1,0 +1,67 @@
+@model MyCMS.Core.Entities.Page
+@{
+    ViewData["Title"] = "Create Page";
+    Layout = "_AdminLayout";
+}
+
+<h1>Create Page</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="PageTitle" class="control-label"></label>
+                <input asp-for="PageTitle" class="form-control" required />
+                <span asp-validation-for="PageTitle" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="PageURL" class="control-label"></label>
+                <input asp-for="PageURL" class="form-control" required />
+                <span asp-validation-for="PageURL" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ParentPage" class="control-label">Parent Page</label>
+                <select asp-for="ParentPage" class="form-control" asp-items="ViewBag.ParentPages">
+                    <option value="">-- None --</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="PageSummary" class="control-label"></label>
+                <textarea asp-for="PageSummary" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="PageBody" class="control-label">Content</label>
+                <div id="editor-container" style="height: 300px;"></div>
+                <input type="hidden" asp-for="PageBody" id="pageBody" />
+            </div>
+
+            <div class="form-group mb-3 form-check">
+                <input class="form-check-input" asp-for="IsHomePage" />
+                <label class="form-check-label" asp-for="IsHomePage">Set as Home Page</label>
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var quill = new Quill('#editor-container', {
+            theme: 'snow'
+        });
+
+        quill.on('text-change', function() {
+            document.getElementById('pageBody').value = quill.root.innerHTML;
+        });
+    </script>
+}

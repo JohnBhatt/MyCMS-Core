@@ -4,7 +4,7 @@ namespace MyCMS.Data
 {
     public class PostgreSqlDbContext : AppDbContext
     {
-        public PostgreSqlDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public PostgreSqlDbContext(DbContextOptions<PostgreSqlDbContext> options) : base(options)
         {
         }
     }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using MyCMS.Core.Entities;
 using MyCMS.Core.Interfaces;
@@ -8,6 +9,7 @@ using MyCMS.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 // Configure dual database support
@@ -28,6 +30,16 @@ if (dbProvider == "PostgreSQL")
     })
     .AddEntityFrameworkStores<PostgreSqlDbContext>()
     .AddDefaultTokenProviders();
+
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.LoginPath = "/Identity/Account/Login";
+        options.LogoutPath = "/Identity/Account/Logout";
+        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    });
+
+    builder.Services.AddSingleton<IEmailSender, NoOpEmailSender>();
+    builder.Services.AddScoped<AppDbContext>(sp => sp.GetRequiredService<PostgreSqlDbContext>());
 }
 else
 {
@@ -44,6 +56,16 @@ else
     })
     .AddEntityFrameworkStores<SqlServerDbContext>()
     .AddDefaultTokenProviders();
+
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.LoginPath = "/Identity/Account/Login";
+        options.LogoutPath = "/Identity/Account/Logout";
+        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    });
+
+    builder.Services.AddSingleton<IEmailSender, NoOpEmailSender>();
+    builder.Services.AddScoped<AppDbContext>(sp => sp.GetRequiredService<SqlServerDbContext>());
 }
 
 // Register services
@@ -74,6 +96,15 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapAreaControllerRoute(
+    name: "admin",
+    areaName: "Admin",
+    pattern: "Admin/{controller=Dashboard}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

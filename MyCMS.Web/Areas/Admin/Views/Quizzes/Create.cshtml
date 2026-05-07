@@ -1,0 +1,51 @@
+@model MyCMS.Core.Entities.Quiz
+@{
+    ViewData["Title"] = "Create Quiz";
+    Layout = "_AdminLayout";
+}
+
+<h1>Create Quiz</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" required />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="StartTime" class="control-label">Start Time</label>
+                <input asp-for="StartTime" type="datetime-local" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="EndTime" class="control-label">End Time</label>
+                <input asp-for="EndTime" type="datetime-local" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TimeLimitMinutes" class="control-label">Time Limit (minutes)</label>
+                <input asp-for="TimeLimitMinutes" type="number" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="PassingScore" class="control-label">Passing Score (%)</label>
+                <input asp-for="PassingScore" type="number" min="0" max="100" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

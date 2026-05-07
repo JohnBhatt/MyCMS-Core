@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System.Xml;
 using MyCMS.Core.Interfaces;
 using MyCMS.Data;
@@ -27,7 +28,7 @@ namespace MyCMS.Services
                 .Where(a => a.IsPublished)
                 .OrderByDescending(a => a.PublishedDate)
                 .Take(itemCount)
-                .ToListAsync();
+                .ToListAsync<Core.Entities.Article>();
 
             return GenerateRssXml(articles, baseUrl, feedTitle, feedDescription);
         }
@@ -40,7 +41,7 @@ namespace MyCMS.Services
             var articles = await _context.Articles
                 .Where(a => a.CategoryId == categoryId && a.IsPublished)
                 .OrderByDescending(a => a.PublishedDate)
-                .ToListAsync();
+                .ToListAsync<Core.Entities.Article>();
 
             return GenerateRssXml(articles, baseUrl, "Category Feed", "Articles by category");
         }
@@ -53,7 +54,7 @@ namespace MyCMS.Services
             var articles = await _context.Articles
                 .Where(a => a.ArticleTagMappings.Any(atm => atm.TagId == tagId) && a.IsPublished)
                 .OrderByDescending(a => a.PublishedDate)
-                .ToListAsync();
+                .ToListAsync<Core.Entities.Article>();
 
             return GenerateRssXml(articles, baseUrl, "Tag Feed", "Articles by tag");
         }

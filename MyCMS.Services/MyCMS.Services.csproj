@@ -2,6 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyCMS.Core\MyCMS.Core.csproj" />
+    <ProjectReference Include="..\MyCMS.Data\MyCMS.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
   </ItemGroup>
 
   <PropertyGroup>

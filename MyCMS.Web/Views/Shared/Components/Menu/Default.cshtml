@@ -1,0 +1,15 @@
+@model MyCMS.Core.Entities.Menu
+
+@if (Model?.MenuItems != null && Model.MenuItems.Any())
+{
+    <nav>
+        <ul class="nav">
+            @foreach (var item in Model.MenuItems.Where(i => i.Visibility).OrderBy(i => i.ItemPosition))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" href="@item.MenuURL">@item.ItemName</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

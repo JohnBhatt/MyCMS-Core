@@ -4,7 +4,7 @@ namespace MyCMS.Data
 {
     public class SqlServerDbContext : AppDbContext
     {
-        public SqlServerDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options) : base(options)
         {
         }
     }

@@ -1,0 +1,45 @@
+@model MyCMS.Core.Entities.Menu
+@{
+    ViewData["Title"] = "Edit Menu";
+    Layout = "_AdminLayout";
+}
+
+<h1>Edit Menu</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group mb-3">
+                <label asp-for="MenuName" class="control-label"></label>
+                <input asp-for="MenuName" class="form-control" required />
+                <span asp-validation-for="MenuName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Position" class="control-label"></label>
+                <select asp-for="Position" class="form-control" required>
+                    <option value="">-- Select Position --</option>
+                    <option value="Main">Main Navigation</option>
+                    <option value="TopNavigation">Top Navigation</option>
+                    <option value="LeftSideBar">Left Sidebar</option>
+                    <option value="RightSideBar">Right Sidebar</option>
+                    <option value="Footer">Footer</option>
+                </select>
+                <span asp-validation-for="Position" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MenuDesc" class="control-label">Description</label>
+                <textarea asp-for="MenuDesc" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

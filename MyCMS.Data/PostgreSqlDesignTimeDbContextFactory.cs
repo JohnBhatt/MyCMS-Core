@@ -13,7 +13,7 @@ namespace MyCMS.Data
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<PostgreSqlDbContext>();
             var connectionString = configuration.GetConnectionString("PostgreSQL");
             optionsBuilder.UseNpgsql(connectionString);
 

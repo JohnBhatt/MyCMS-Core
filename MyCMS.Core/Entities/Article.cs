@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace MyCMS.Core.Entities
 {
@@ -31,5 +32,7 @@ namespace MyCMS.Core.Entities
         public DateTime? FeaturedUpto { get; set; }
         public bool IsPublished { get; set; } = false;
         public DateTime? PublishedDate { get; set; }
+
+        public List<ArticleTagMapping> ArticleTagMappings { get; set; } = new();
     }
 }

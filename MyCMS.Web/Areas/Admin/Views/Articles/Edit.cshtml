@@ -1,0 +1,107 @@
+@model MyCMS.Core.Entities.Article
+@{
+    ViewData["Title"] = "Edit Article";
+    Layout = "_AdminLayout";
+}
+
+<h1>Edit Article</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" required />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Slug" class="control-label"></label>
+                <input asp-for="Slug" class="form-control" required />
+                <span asp-validation-for="Slug" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="CategoryId" class="control-label">Category</label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories" required>
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MetaDescription" class="control-label">Meta Description</label>
+                <textarea asp-for="MetaDescription" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MetaKeywords" class="control-label">Meta Keywords</label>
+                <input asp-for="MetaKeywords" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Content" class="control-label">Content</label>
+                <div id="editor-container" style="height: 400px;"></div>
+                <input type="hidden" asp-for="Content" id="articleContent" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Tags" class="control-label">Tags</label>
+                <input asp-for="Tags" class="form-control" placeholder="Comma separated tags" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Featured Image</label>
+                <input type="file" name="FeaturedImageFile" class="form-control" />
+                @if (!string.IsNullOrEmpty(Model.FeaturedImage))
+                {
+                    <div class="mt-2">
+                        <img src="@Model.FeaturedImage" alt="Featured" style="max-width: 200px;" />
+                    </div>
+                }
+            </div>
+
+            <div class="form-group mb-3 form-check">
+                <input class="form-check-input" asp-for="IsPublished" />
+                <label class="form-check-label" asp-for="IsPublished">Published</label>
+            </div>
+
+            <div class="form-group mb-3 form-check">
+                <input class="form-check-input" asp-for="IsFeatured" />
+                <label class="form-check-label" asp-for="IsFeatured">Featured Article</label>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="FeaturedFrom" class="control-label">Featured From</label>
+                <input asp-for="FeaturedFrom" type="date" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="FeaturedUpto" class="control-label">Featured Until</label>
+                <input asp-for="FeaturedUpto" type="date" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var quill = new Quill('#editor-container', {
+            theme: 'snow'
+        });
+
+        quill.root.innerHTML = document.getElementById('articleContent').value;
+
+        quill.on('text-change', function() {
+            document.getElementById('articleContent').value = quill.root.innerHTML;
+        });
+    </script>
+}

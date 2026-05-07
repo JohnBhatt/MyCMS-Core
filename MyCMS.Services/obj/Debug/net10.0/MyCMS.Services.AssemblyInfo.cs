@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyCMS.Services")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6e572e91944048e67a51d1e96018ec895d257230")]
 [assembly: System.Reflection.AssemblyProductAttribute("MyCMS.Services")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MyCMS.Services")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

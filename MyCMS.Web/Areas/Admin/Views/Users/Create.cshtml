@@ -1,0 +1,57 @@
+@model MyCMS.Core.Entities.ApplicationUser
+@{
+    ViewData["Title"] = "Create User";
+    Layout = "_AdminLayout";
+}
+
+<h1>Create User</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="password" class="control-label">Password</label>
+                <input name="password" type="password" class="form-control" required />
+                
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="UserRole" class="control-label">Role</label>
+                <select asp-for="UserRole" class="form-control">
+                    <option value="">-- Select Role --</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Editor">Editor</option>
+                    <option value="User">User</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3 form-check">
+                <input class="form-check-input" asp-for="IsAuthorized" />
+                <label class="form-check-label" asp-for="IsAuthorized">Authorized</label>
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

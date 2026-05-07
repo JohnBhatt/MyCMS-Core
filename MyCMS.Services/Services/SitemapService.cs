@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System.Xml;
 using MyCMS.Core.Interfaces;
 using MyCMS.Data;
@@ -35,7 +36,7 @@ namespace MyCMS.Services
             writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
             // Add pages
-            var pages = await _context.Pages.ToListAsync();
+            var pages = await _context.Pages.ToListAsync<Core.Entities.Page>();
             foreach (var page in pages)
             {
                 writer.WriteStartElement("url");
@@ -47,7 +48,7 @@ namespace MyCMS.Services
             }
 
             // Add articles
-            var articles = await _context.Articles.Where(a => a.IsPublished).ToListAsync();
+            var articles = await _context.Articles.Where(a => a.IsPublished).ToListAsync<Core.Entities.Article>();
             foreach (var article in articles)
             {
                 writer.WriteStartElement("url");
