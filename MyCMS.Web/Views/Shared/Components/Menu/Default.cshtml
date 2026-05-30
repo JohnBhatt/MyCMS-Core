@@ -2,14 +2,17 @@
 
 @if (Model?.MenuItems != null && Model.MenuItems.Any())
 {
-    <nav>
-        <ul class="nav">
-            @foreach (var item in Model.MenuItems.Where(i => i.Visibility).OrderBy(i => i.ItemPosition))
-            {
-                <li class="nav-item">
-                    <a class="nav-link" href="@item.MenuURL">@item.ItemName</a>
-                </li>
-            }
-        </ul>
-    </nav>
+    @foreach (var item in Model.MenuItems.Where(i => i.Visibility).OrderBy(i => i.ItemPosition))
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="@item.MenuURL">@item.ItemName</a>
+        </li>
+    }
+}
+else
+{
+    <!-- Fallback menu items if no menu is configured -->
+    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Article" asp-action="Index">Articles</a></li>
+    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Page" asp-action="Index">About</a></li>
 }

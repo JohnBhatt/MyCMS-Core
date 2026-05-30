@@ -1,0 +1,27 @@
+@model MyCMS.Core.Entities.Theme
+@{
+    ViewData["Title"] = "Configure Theme";
+    Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>Configure @Model.DisplayName</h2>
+    <p class="text-muted">Customize theme settings</p>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                
+                <div class="mb-3">
+                    <label class="form-label">Homepage Categories (comma-separated category IDs)</label>
+                    <input type="text" class="form-control" name="categoryConfig" value="@ViewBag.CategoryConfig" placeholder="e.g., 1,2,3,4">
+                    <small class="text-muted">Enter the IDs of categories to display on the homepage. Leave empty to show all categories.</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Configuration</button>
+                <a href="@Url.Action("Index", "Themes", new { area = "Admin" })" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

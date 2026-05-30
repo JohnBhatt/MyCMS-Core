@@ -1,0 +1,43 @@
+@model IEnumerable<MyCMS.Core.Entities.Theme>
+@{
+    ViewData["Title"] = "Themes";
+    Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>Theme Management</h2>
+    <p class="text-muted">Select and configure your site's theme</p>
+
+    <div class="row mt-4">
+        @foreach (var theme in Model)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card @(theme.IsActive ? "border-primary" : "")">
+                    @if (!string.IsNullOrEmpty(theme.Thumbnail))
+                    {
+                        <img src="@theme.Thumbnail" class="card-img-top" alt="@theme.DisplayName" style="height: 200px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <span class="text-muted">No Preview</span>
+                        </div>
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@theme.DisplayName</h5>
+                        <p class="card-text small text-muted">@theme.Description</p>
+                        @if (theme.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Activate", "Themes", new { area = "Admin", id = theme.Id })" class="btn btn-primary btn-sm">Activate</a>
+                        }
+                        <a href="@Url.Action("Configure", "Themes", new { area = "Admin", id = theme.Id })" class="btn btn-outline-secondary btn-sm">Configure</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

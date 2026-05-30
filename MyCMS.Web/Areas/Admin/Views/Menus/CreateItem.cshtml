@@ -1,0 +1,69 @@
+@model MyCMS.Core.Entities.MenuItem
+@{
+    ViewData["Title"] = "Create Menu Item";
+    Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Create Menu Item</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="CreateItem" asp-controller="Menus" asp-area="Admin" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            
+            <input type="hidden" asp-for="MenuId" />
+            
+            <div class="form-group mb-3">
+                <label asp-for="ItemName" class="control-label">Title</label>
+                <input asp-for="ItemName" class="form-control" />
+                <span asp-validation-for="ItemName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MenuURL" class="control-label">URL</label>
+                <input asp-for="MenuURL" class="form-control" />
+                <span asp-validation-for="MenuURL" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MenuRemarks" class="control-label">Remarks (Optional)</label>
+                <textarea asp-for="MenuRemarks" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="MenuRemarks" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ParentMenuItem" class="control-label">Parent Item</label>
+                <select asp-for="ParentMenuItem" class="form-control">
+                    <option value="">-- None (Root Level) --</option>
+                    @if (ViewBag.MenuItems != null)
+                    {
+                        @foreach (var item in ViewBag.MenuItems)
+                        {
+                            <option value="@item.Id">@item.ItemName</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ItemPosition" class="control-label">Display Order</label>
+                <input asp-for="ItemPosition" type="number" class="form-control" />
+                <span asp-validation-for="ItemPosition" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3 form-check">
+                <input class="form-check-input" asp-for="Visibility" />
+                <label class="form-check-label" asp-for="Visibility">Visible</label>
+            </div>
+
+            <div class="form-group mb-3">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a href="@Url.Action("Items", "Menus", new { area = "Admin", menuId = Model.MenuId })" class="btn btn-secondary">Back to Items</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

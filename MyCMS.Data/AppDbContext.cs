@@ -26,6 +26,8 @@ namespace MyCMS.Data
         public DbSet<Upload> Uploads { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
         public DbSet<OpenGraphTag> OpenGraphTags { get; set; }
+        public DbSet<Theme> Themes { get; set; }
+        public DbSet<ThemeConfiguration> ThemeConfigurations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,10 +38,10 @@ namespace MyCMS.Data
                 .Property(p => p.PageURL).IsRequired();
 
             // Configure Menu - MenuItem relationship
-            modelBuilder.Entity<MenuItem>()
-                .HasOne<Menu>()
-                .WithMany()
-                .HasForeignKey(m => m.MenuId)
+            modelBuilder.Entity<Menu>()
+                .HasMany(m => m.MenuItems)
+                .WithOne()
+                .HasForeignKey(mi => mi.MenuId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Configure MenuItem self-referencing for parent-child
@@ -51,7 +53,7 @@ namespace MyCMS.Data
 
             // Configure Article - ArticleCategory relationship
             modelBuilder.Entity<Article>()
-                .HasOne<ArticleCategory>()
+                .HasOne(a => a.Category)
                 .WithMany()
                 .HasForeignKey(a => a.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -85,7 +87,7 @@ namespace MyCMS.Data
             // Configure ArticleTagMapping many-to-many
             modelBuilder.Entity<ArticleTagMapping>()
                 .HasOne<Article>()
-                .WithMany()
+                .WithMany(a => a.ArticleTagMappings)
                 .HasForeignKey(atm => atm.ArticleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -182,6 +184,19 @@ namespace MyCMS.Data
 
             modelBuilder.Entity<OpenGraphTag>()
                 .HasQueryFilter(o => !o.IsDeleted);
+
+            modelBuilder.Entity<Theme>()
+                .HasQueryFilter(t => !t.IsDeleted);
+
+            // Configure Theme - ThemeConfiguration relationship
+            modelBuilder.Entity<ThemeConfiguration>()
+                .HasOne<Theme>()
+                .WithMany()
+                .HasForeignKey(tc => tc.ThemeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ThemeConfiguration>()
+                .HasQueryFilter(tc => !tc.IsDeleted);
         }
     }
 }

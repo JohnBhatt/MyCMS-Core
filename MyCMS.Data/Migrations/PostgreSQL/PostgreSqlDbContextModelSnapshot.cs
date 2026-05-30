@@ -17,7 +17,7 @@ namespace MyCMS.Data.Migrations.PostgreSQL
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.7")
+                .HasAnnotation("ProductVersion", "10.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -418,9 +418,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     b.Property<Guid>("ArticleId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ArticleId1")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -442,8 +439,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     b.HasKey("Id");
 
                     b.HasIndex("ArticleId");
-
-                    b.HasIndex("ArticleId1");
 
                     b.HasIndex("TagId");
 
@@ -667,9 +662,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     b.Property<Guid>("MenuId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("MenuId1")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("MenuRemarks")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -695,8 +687,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     b.HasKey("Id");
 
                     b.HasIndex("MenuId");
-
-                    b.HasIndex("MenuId1");
 
                     b.HasIndex("ParentMenuItem");
 
@@ -1024,6 +1014,162 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     b.ToTable("QuizQuestions");
                 });
 
+            modelBuilder.Entity("MyCMS.Core.Entities.Theme", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ColorScheme")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CustomCss")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FolderName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LayoutOptions")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Thumbnail")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Themes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Clean, typography-focused design with elegant serif headings and lots of whitespace.",
+                            DisplayName = "Minimal",
+                            FolderName = "Minimal",
+                            IsActive = true,
+                            IsDefault = true,
+                            IsDeleted = false,
+                            Name = "Minimal",
+                            Thumbnail = "/Themes/Minimal/assets/thumbnail.svg"
+                        },
+                        new
+                        {
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Classic blog layout with sidebar, blue accent, and card-based article grid.",
+                            DisplayName = "Blog",
+                            FolderName = "Blog",
+                            IsActive = false,
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Blog",
+                            Thumbnail = "/Themes/Blog/assets/thumbnail.svg"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bold magazine style with dark hero section, featured posts, and trending sidebar.",
+                            DisplayName = "Magazine",
+                            FolderName = "Magazine",
+                            IsActive = false,
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Magazine",
+                            Thumbnail = "/Themes/Magazine/assets/thumbnail.svg"
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Vibrant gradients (purple/pink), rounded cards, and configurable category grid with icons.",
+                            DisplayName = "Modern",
+                            FolderName = "Modern",
+                            IsActive = false,
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Modern",
+                            Thumbnail = "/Themes/Modern/assets/thumbnail.svg"
+                        });
+                });
+
+            modelBuilder.Entity("MyCMS.Core.Entities.ThemeConfiguration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ThemeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ThemeId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ThemeId");
+
+                    b.HasIndex("ThemeId1");
+
+                    b.ToTable("ThemeConfigurations");
+                });
+
             modelBuilder.Entity("MyCMS.Core.Entities.Upload", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1131,11 +1277,13 @@ namespace MyCMS.Data.Migrations.PostgreSQL
 
             modelBuilder.Entity("MyCMS.Core.Entities.Article", b =>
                 {
-                    b.HasOne("MyCMS.Core.Entities.ArticleCategory", null)
+                    b.HasOne("MyCMS.Core.Entities.ArticleCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("MyCMS.Core.Entities.ArticleCategory", b =>
@@ -1149,14 +1297,10 @@ namespace MyCMS.Data.Migrations.PostgreSQL
             modelBuilder.Entity("MyCMS.Core.Entities.ArticleTagMapping", b =>
                 {
                     b.HasOne("MyCMS.Core.Entities.Article", null)
-                        .WithMany()
+                        .WithMany("ArticleTagMappings")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("MyCMS.Core.Entities.Article", null)
-                        .WithMany("ArticleTagMappings")
-                        .HasForeignKey("ArticleId1");
 
                     b.HasOne("MyCMS.Core.Entities.ArticleTag", null)
                         .WithMany()
@@ -1168,14 +1312,10 @@ namespace MyCMS.Data.Migrations.PostgreSQL
             modelBuilder.Entity("MyCMS.Core.Entities.MenuItem", b =>
                 {
                     b.HasOne("MyCMS.Core.Entities.Menu", null)
-                        .WithMany()
+                        .WithMany("MenuItems")
                         .HasForeignKey("MenuId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("MyCMS.Core.Entities.Menu", null)
-                        .WithMany("MenuItems")
-                        .HasForeignKey("MenuId1");
 
                     b.HasOne("MyCMS.Core.Entities.MenuItem", null)
                         .WithMany()
@@ -1232,6 +1372,21 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     b.HasOne("MyCMS.Core.Entities.Quiz", null)
                         .WithMany("Questions")
                         .HasForeignKey("QuizId1");
+                });
+
+            modelBuilder.Entity("MyCMS.Core.Entities.ThemeConfiguration", b =>
+                {
+                    b.HasOne("MyCMS.Core.Entities.Theme", null)
+                        .WithMany()
+                        .HasForeignKey("ThemeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyCMS.Core.Entities.Theme", "Theme")
+                        .WithMany()
+                        .HasForeignKey("ThemeId1");
+
+                    b.Navigation("Theme");
                 });
 
             modelBuilder.Entity("MyCMS.Core.Entities.Article", b =>

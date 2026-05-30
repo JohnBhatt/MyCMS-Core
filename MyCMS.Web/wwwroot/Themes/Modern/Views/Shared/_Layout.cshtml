@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MyCMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Themes/Modern/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyCMS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Article" asp-action="Index">Articles</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Page" asp-action="Index">About</a></li>
+                </ul>
+                <form class="d-flex" asp-controller="Search" asp-action="Index" method="get">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search..." style="border-radius: 25px; border: 1px solid #eee;">
+                    <button class="btn btn-gradient">Search</button>
+                </form>
+                @await Component.InvokeAsync("LoginPartial")
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    @RenderBody()
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="footer-heading" style="font-size: 1.75rem;">MyCMS</h4>
+                    <p class="text-white-50 small">A modern content management system designed for creators who want to share their stories with the world.</p>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h5 class="footer-heading">Quick Links</h5>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="footer-link">Home</a>
+                    <a asp-area="" asp-controller="Article" asp-action="Index" class="footer-link">Articles</a>
+                    <a asp-area="" asp-controller="Page" asp-action="Index" class="footer-link">About</a>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h5 class="footer-heading">Resources</h5>
+                    <a href="#" class="footer-link">Documentation</a>
+                    <a href="#" class="footer-link">Tutorials</a>
+                    <a href="#" class="footer-link">Support</a>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h5 class="footer-heading">Stay Connected</h5>
+                    <div class="social-icons mb-3">
+                        <a href="#" class="social-icon">𝕏</a>
+                        <a href="#" class="social-icon">f</a>
+                        <a href="#" class="social-icon">in</a>
+                        <a href="#" class="social-icon">📷</a>
+                        <a href="#" class="social-icon">▶</a>
+                    </div>
+                    <p class="text-white-50 small">contact@mycms.com</p>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="text-center text-white-50 small">
+                &copy; 2026 MyCMS. All rights reserved. Made with ❤️
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

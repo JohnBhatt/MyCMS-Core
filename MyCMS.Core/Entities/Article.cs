@@ -9,6 +9,8 @@ namespace MyCMS.Core.Entities
         [Required]
         public Guid CategoryId { get; set; }
 
+        public ArticleCategory? Category { get; set; }
+
         [Required]
         [MaxLength(1000)]
         public string Title { get; set; }

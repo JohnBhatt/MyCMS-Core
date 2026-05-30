@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "Error";
+    Layout = ViewBag.ThemeLayout ?? "/Views/Themes/Minimal/Shared/_Layout.cshtml";
+}
+
+<div class="container text-center py-5">
+    <h1 class="display-1 fw-bold text-danger">Error</h1>
+    <h3 class="mb-3">An error occurred while processing your request</h3>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-3">Return to Home</a>
+</div>

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyCMS.Core.Entities;
+using MyCMS.Core.Helpers;
 using MyCMS.Core.Interfaces;
 using MyCMS.Data;
 
@@ -60,7 +61,19 @@ namespace MyCMS.Services
 
         public async Task<Article?> GetArticleBySlugAsync(string slug)
         {
-            return await _context.Articles.FirstOrDefaultAsync(a => a.Slug == slug);
+            var sanitizedSlug = SlugHelper.SanitizeSlug(slug);
+            return await _context.Articles.FirstOrDefaultAsync(a => a.Slug == sanitizedSlug);
+        }
+
+        public async Task<Article?> GetArticleByCategoryAndSlugAsync(string category, string slug)
+        {
+            var sanitizedCategory = SlugHelper.SanitizeSlug(category);
+            var sanitizedSlug = SlugHelper.SanitizeSlug(slug);
+            return await _context.Articles
+                .Include(a => a.Category)
+                .FirstOrDefaultAsync(a => a.Category != null && 
+                    a.Category.Slug == sanitizedCategory && 
+                    a.Slug == sanitizedSlug);
         }
 
         public async Task<Article> CreateArticleAsync(Article article)
@@ -74,6 +87,7 @@ namespace MyCMS.Services
 
         public async Task<Article> UpdateArticleAsync(Article article)
         {
+            article.Slug = SlugHelper.GenerateSlug(article.Slug);
             article.ModifiedOn = DateTime.UtcNow;
             _context.Articles.Update(article);
             await _context.SaveChangesAsync();

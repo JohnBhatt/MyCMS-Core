@@ -1,0 +1,47 @@
+@model MyCMS.Web.ViewComponents.SidebarViewModel
+
+<!-- Categories Widget -->
+<div class="sidebar-widget">
+    <h5>Categories</h5>
+    @foreach (var category in Model.Categories)
+    {
+        @await Html.PartialAsync("_CategoryTree", category)
+    }
+</div>
+
+<!-- Tags Widget -->
+<div class="sidebar-widget">
+    <h5>Tags</h5>
+    <div class="tag-cloud">
+        @foreach (var tag in Model.Tags)
+        {
+            <a asp-controller="Article" asp-action="Tag" asp-route-slug="@tag.Slug" class="badge bg-primary">@tag.Name</a>
+        }
+    </div>
+</div>
+
+<!-- Recent Posts Widget -->
+<div class="sidebar-widget">
+    <h5>Recent Posts</h5>
+    @foreach (var post in Model.RecentPosts)
+    {
+        <div class="mb-3">
+            <a asp-controller="Article" asp-action="Details" asp-route-slug="@post.Slug" class="text-decoration-none text-dark">
+                <h6 class="mb-1">@post.Title</h6>
+            </a>
+            <small class="text-muted">@post.PublishedDate?.ToString("MMM dd, yyyy")</small>
+        </div>
+    }
+</div>
+
+<!-- Newsletter Widget -->
+<div class="sidebar-widget">
+    <h5>Newsletter</h5>
+    <p class="small text-muted">Subscribe to get the latest articles delivered to your inbox.</p>
+    <form class="newsletter-form" asp-controller="Newsletter" asp-action="Subscribe" method="post">
+        <div class="input-group">
+            <input type="email" name="email" class="form-control" placeholder="Your email" required>
+            <button class="btn btn-primary" type="submit">Subscribe</button>
+        </div>
+    </form>
+</div>

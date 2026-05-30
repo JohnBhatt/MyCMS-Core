@@ -1,14 +1,17 @@
 @{
     ViewData["Title"] = "Home";
-    Layout = "_Layout";
+    Layout = ViewBag.ThemeLayout ?? "/Views/Themes/Minimal/Shared/_Layout.cshtml";
 }
-
-@await Component.InvokeAsync("Menu", new { position = "Main" })
 
 @if (ViewBag.HomePage != null)
 {
-    <div class="container mt-4">
-        <h1>@ViewBag.HomePage.PageTitle</h1>
+    <div class="hero-section">
+        <div class="container">
+            <h1>@ViewBag.HomePage.PageTitle</h1>
+            <p>@ViewBag.HomePage.MetaDescription</p>
+        </div>
+    </div>
+    <div class="container">
         <div class="content">
             @Html.Raw(ViewBag.HomePage.PageBody)
         </div>
@@ -16,33 +19,31 @@
 }
 else
 {
-    <div class="container mt-4">
-        <h1>Welcome to MyCMS</h1>
-        <p>Your content management system is ready. Please set a homepage in the admin panel.</p>
-        <a href="/Admin" class="btn btn-primary">Go to Admin</a>
+    <div class="hero-section">
+        <div class="container">
+            <h1>Welcome to MyCMS</h1>
+            <p>Your content management system is ready. Start creating amazing content.</p>
+            <a href="@Url.Action("Index", "Article")" class="btn btn-gradient">Browse Articles</a>
+        </div>
     </div>
 }
 
 @if (ViewBag.FeaturedArticles is List<Article> featuredArticles && featuredArticles.Any())
 {
-    <div class="container mt-5">
-        <h2>Featured Articles</h2>
-        <div class="row">
+    <div class="container my-5">
+        <h3 class="section-title">Latest Articles</h3>
+        <div class="article-list">
             @foreach (var article in featuredArticles)
             {
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        @if (!string.IsNullOrEmpty(article.FeaturedImage))
-                        {
-                            <img src="@article.FeaturedImage" class="card-img-top" alt="@article.Title">
-                        }
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <a asp-action="Details" asp-controller="Article" asp-route-slug="@article.Slug">@article.Title</a>
-                            </h5>
-                            <p class="card-text">@article.MetaDescription</p>
-                        </div>
+                <div class="article-item">
+                    <div class="article-meta">
+                        <span>@article.Category?.CategoryName</span> • <span>@article.PublishedDate?.ToString("MMMM dd, yyyy")</span>
                     </div>
+                    <h2>
+                        <a asp-action="Details" asp-controller="Article" asp-route-slug="@article.Slug">@article.Title</a>
+                    </h2>
+                    <p class="article-excerpt">@article.MetaDescription</p>
+                    <a asp-action="Details" asp-controller="Article" asp-route-slug="@article.Slug" class="read-more">Read article →</a>
                 </div>
             }
         </div>

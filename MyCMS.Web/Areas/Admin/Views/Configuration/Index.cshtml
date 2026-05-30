@@ -33,6 +33,23 @@
                 <textarea asp-for="FooterText" class="form-control" rows="2"></textarea>
             </div>
 
+            <h4>Theme</h4>
+            <hr />
+            <div class="form-group mb-3">
+                <label asp-for="ThemeName" class="control-label">Default Theme</label>
+                <select asp-for="ThemeName" class="form-control">
+                    <option value="">-- Select Theme --</option>
+                    @if (ViewBag.Themes != null)
+                    {
+                        @foreach (var theme in ViewBag.Themes)
+                        {
+                            <option value="@theme.Name" selected="@((Model.ThemeName == theme.Name) ? "selected" : null)">@theme.DisplayName</option>
+                        }
+                    }
+                </select>
+                <small class="form-text text-muted">Select the default theme for your site. This will be applied on first install and can be changed later.</small>
+            </div>
+
             <h4>Social Media</h4>
             <hr />
             <div class="form-group mb-3">

@@ -80,15 +80,23 @@ builder.Services.AddScoped<IOpenGraphService, OpenGraphService>();
 builder.Services.AddScoped<ISitemapService, SitemapService>();
 builder.Services.AddScoped<IRssFeedService, RssFeedService>();
 builder.Services.AddScoped<IAmpService, AmpService>();
+builder.Services.AddScoped<IThemeService, ThemeService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+else
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
 app.UseHttpsRedirection();
 
@@ -102,6 +110,11 @@ app.MapAreaControllerRoute(
     name: "admin",
     areaName: "Admin",
     pattern: "Admin/{controller=Dashboard}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "article-details",
+    pattern: "{category}/{slug}",
+    defaults: new { controller = "Article", action = "Details" });
 
 app.MapControllerRoute(
     name: "default",

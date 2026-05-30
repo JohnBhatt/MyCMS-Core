@@ -8,52 +8,106 @@
 
 <div class="row">
     <div class="col-md-3">
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Total Pages</h5>
-                <p class="card-text display-4" id="totalPages">-</p>
+        <div class="card mb-3 text-center">
+            <div class="card-body position-relative">
+                <a asp-action="Create" asp-controller="Pages" class="btn btn-sm btn-primary position-absolute top-0 end-0 m-2" title="Create New Page">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
+                <a asp-action="Index" asp-controller="Pages" class="text-decoration-none text-dark">
+                    <h5 class="card-title">Pages</h5>
+                    <p class="card-text display-4" id="totalPages">-</p>
+                </a>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Total Articles</h5>
-                <p class="card-text display-4" id="totalArticles">-</p>
+        <div class="card mb-3 text-center">
+            <div class="card-body position-relative">
+                <a asp-action="Create" asp-controller="Articles" class="btn btn-sm btn-success position-absolute top-0 end-0 m-2" title="Create New Article">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
+                <a asp-action="Index" asp-controller="Articles" class="text-decoration-none text-dark">
+                    <h5 class="card-title">Articles</h5>
+                    <p class="card-text display-4" id="totalArticles">-</p>
+                </a>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Total Users</h5>
-                <p class="card-text display-4" id="totalUsers">-</p>
+        <div class="card mb-3 text-center">
+            <div class="card-body position-relative">
+                <a asp-action="Create" asp-controller="Menus" class="btn btn-sm btn-info position-absolute top-0 end-0 m-2" title="Create New Menu">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
+                <a asp-action="Index" asp-controller="Menus" class="text-decoration-none text-dark">
+                    <h5 class="card-title">Menus</h5>
+                    <p class="card-text display-4" id="totalMenus">-</p>
+                </a>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Total Quizzes</h5>
-                <p class="card-text display-4" id="totalQuizzes">-</p>
+        <div class="card mb-3 text-center">
+            <div class="card-body position-relative">
+                <a asp-action="Create" asp-controller="Quizzes" class="btn btn-sm btn-warning position-absolute top-0 end-0 m-2" title="Create New Quiz">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
+                <a asp-action="Index" asp-controller="Quizzes" class="text-decoration-none text-dark">
+                    <h5 class="card-title">Quizzes</h5>
+                    <p class="card-text display-4" id="totalQuizzes">-</p>
+                </a>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h5>Quick Actions</h5>
+    <div class="col-md-3">
+        <div class="card mb-3 text-center">
+            <div class="card-body position-relative">
+                <a asp-action="Create" asp-controller="Categories" class="btn btn-sm btn-secondary position-absolute top-0 end-0 m-2" title="Create New Category">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
+                <a asp-action="Index" asp-controller="Categories" class="text-decoration-none text-dark">
+                    <h5 class="card-title">Categories</h5>
+                    <p class="card-text display-4" id="totalCategories">-</p>
+                </a>
             </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card mb-3 text-center">
+            <div class="card-body position-relative">
+                <a asp-action="Create" asp-controller="Files" class="btn btn-sm btn-dark position-absolute top-0 end-0 m-2" title="Upload New File">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
+                <a asp-action="Index" asp-controller="Files" class="text-decoration-none text-dark">
+                    <h5 class="card-title">Files</h5>
+                    <p class="card-text display-4" id="totalFiles">-</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card mb-3 text-center">
             <div class="card-body">
-                <div class="d-flex gap-2">
-                    <a asp-action="Create" asp-controller="Pages" class="btn btn-primary">Create Page</a>
-                    <a asp-action="Create" asp-controller="Articles" class="btn btn-success">Create Article</a>
-                    <a asp-action="Create" asp-controller="Menus" class="btn btn-info">Create Menu</a>
-                    <a asp-action="Create" asp-controller="Quizzes" class="btn btn-warning">Create Quiz</a>
-                </div>
+                <a asp-action="Index" asp-controller="Users" class="text-decoration-none text-dark">
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text display-4" id="totalUsers">-</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card mb-3 text-center">
+            <div class="card-body position-relative">
+                <a asp-action="Index" asp-controller="Configuration" class="btn btn-sm btn-outline-primary position-absolute top-0 end-0 m-2" title="Settings">
+                    <i class="bi bi-gear"></i>
+                </a>
+                <a asp-action="Index" asp-controller="Configuration" class="text-decoration-none text-dark">
+                    <h5 class="card-title">Settings</h5>
+                    <p class="card-text h5 mt-4"><i class="bi bi-sliders"></i></p>
+                </a>
             </div>
         </div>
     </div>
@@ -64,7 +118,10 @@
         // Load statistics (placeholder - will be implemented with API calls)
         document.getElementById('totalPages').textContent = '0';
         document.getElementById('totalArticles').textContent = '0';
-        document.getElementById('totalUsers').textContent = '0';
+        document.getElementById('totalMenus').textContent = '0';
         document.getElementById('totalQuizzes').textContent = '0';
+        document.getElementById('totalCategories').textContent = '0';
+        document.getElementById('totalFiles').textContent = '0';
+        document.getElementById('totalUsers').textContent = '0';
     </script>
 }

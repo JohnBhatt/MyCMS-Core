@@ -1,41 +1,40 @@
 @model List<MyCMS.Core.Entities.Article>
 @{
     ViewData["Title"] = "Articles";
-    Layout = "_Layout";
+    Layout = ViewBag.ThemeLayout ?? "/Views/Themes/Minimal/Shared/_Layout.cshtml";
 }
 
-<h1>Articles</h1>
+<div class="hero-section">
+    <div class="container">
+        <h1>Articles</h1>
+        <p>Browse all our published articles</p>
+    </div>
+</div>
 
-<div class="container mt-4">
-    <div class="row">
-        @if (Model != null && Model.Any())
-        {
+<div class="container my-5">
+    @if (Model != null && Model.Any())
+    {
+        <div class="article-list">
             @foreach (var article in Model)
             {
-                <div class="col-md-12 mb-4">
-                    <div class="card">
-                        @if (!string.IsNullOrEmpty(article.FeaturedImage))
-                        {
-                            <img src="@article.FeaturedImage" class="card-img-top" alt="@article.Title">
-                        }
-                        <div class="card-body">
-                            <h2 class="card-title">
-                                <a asp-action="Details" asp-route-slug="@article.Slug">@article.Title</a>
-                            </h2>
-                            <p class="card-text text-muted">
-                                Published: @article.PublishedDate?.ToString("MMMM dd, yyyy") | Views: @article.ViewCount
-                            </p>
-                            <p class="card-text">@article.MetaDescription</p>
-                        </div>
+                <div class="article-item">
+                    <div class="article-meta">
+                        <span>@article.Category?.CategoryName</span> • <span>@(article.PublishedDate?.ToString("MMMM dd, yyyy"))</span>
                     </div>
+                    <h2>
+                        <a href="@Url.Action("Details", "Article", new { category = article.Category?.Slug, slug = article.Slug })">@article.Title</a>
+                    </h2>
+                    <p class="article-excerpt">@article.MetaDescription</p>
+                    <a href="@Url.Action("Details", "Article", new { category = article.Category?.Slug, slug = article.Slug })" class="read-more">Read article →</a>
                 </div>
             }
-        }
-        else
-        {
-            <div class="col-md-12">
-                <p>No articles found.</p>
-            </div>
-        }
-    </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <h3>No articles found</h3>
+            <p class="text-muted">Check back later for new content.</p>
+        </div>
+    }
 </div>

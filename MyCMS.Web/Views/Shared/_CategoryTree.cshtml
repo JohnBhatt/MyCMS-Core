@@ -1,0 +1,18 @@
+@model MyCMS.Web.ViewComponents.SidebarCategoryItem
+
+@{
+    var paddingLeft = Model.Level * 20;
+}
+
+<div class="category-item" style="padding-left: @(paddingLeft)px;">
+    <a asp-controller="Article" asp-action="Category" asp-route-slug="@Model.Slug" class="text-decoration-none text-dark">@Model.Name</a>
+    <span class="category-count">@Model.PostCount</span>
+</div>
+
+@if (Model.Children.Any())
+{
+    foreach (var child in Model.Children)
+    {
+        @await Html.PartialAsync("_CategoryTree", child)
+    }
+}

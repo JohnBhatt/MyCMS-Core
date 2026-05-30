@@ -1,0 +1,94 @@
+@model MyCMS.Core.Interfaces.SearchResult
+@{
+    ViewData["Title"] = "Search";
+    Layout = ViewBag.ThemeLayout ?? "/Views/Themes/Minimal/Shared/_Layout.cshtml";
+}
+
+<div class="hero-section">
+    <div class="container">
+        <h1>Search Results</h1>
+        <p>@Model.TotalResults results found for "@ViewBag.Query"</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    @if (Model.TotalResults == 0)
+    {
+        <div class="text-center py-5">
+            <h3>No results found</h3>
+            <p class="text-muted">Try different keywords or check your spelling.</p>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-gradient">Back to Home</a>
+        </div>
+    }
+    else
+    {
+        @if (Model.Articles.Any())
+        {
+            <h3 class="section-title">Articles</h3>
+            <div class="article-list">
+                @foreach (var article in Model.Articles)
+                {
+                    <div class="article-item">
+                        <div class="article-meta">
+                            <span>@article.CategoryName</span> • <span>@(article.PublishedDate?.ToString("MMMM dd, yyyy"))</span>
+                        </div>
+                        <h2>
+                            <a href="@Url.Action("Details", "Article", new { slug = article.Slug })">@article.Title</a>
+                        </h2>
+                        <p class="article-excerpt">@article.MetaDescription</p>
+                        <a href="@Url.Action("Details", "Article", new { slug = article.Slug })" class="read-more">Read article →</a>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (Model.Pages.Any())
+        {
+            <h3 class="section-title mt-5">Pages</h3>
+            <div class="article-list">
+                @foreach (var pageItem in Model.Pages)
+                {
+                    <div class="article-item">
+                        <div class="article-meta">
+                            <span>Page</span> • <span>@(pageItem.CreatedOn?.ToString("MMMM dd, yyyy"))</span>
+                        </div>
+                        <h2>
+                            <a href="@Url.Action("Details", "Page", new { slug = pageItem.Slug })">@pageItem.Title</a>
+                        </h2>
+                        <p class="article-excerpt">@pageItem.MetaDescription</p>
+                        <a href="@Url.Action("Details", "Page", new { slug = pageItem.Slug })" class="read-more">View page →</a>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Pagination -->
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Search pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    @if (Model.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", "Search", new { q = ViewBag.Query, p = Model.CurrentPage - 1 })">Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", "Search", new { q = ViewBag.Query, p = i })">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.CurrentPage < Model.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", "Search", new { q = ViewBag.Query, p = Model.CurrentPage + 1 })">Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    }
+</div>

@@ -1,0 +1,11 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1a1a1a"/>
+  <rect x="0" y="0" width="400" height="60" fill="#2d2d2d"/>
+  <text x="20" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="white" text-transform="uppercase">MAGAZINE</text>
+  <rect x="20" y="80" width="180" height="100" fill="#333" stroke="#444" stroke-width="2"/>
+  <rect x="210" y="80" width="170" height="45" fill="#dc3545" rx="2"/>
+  <rect x="210" y="135" width="170" height="45" fill="#333" stroke="#444" stroke-width="1" rx="2"/>
+  <rect x="20" y="200" width="360" height="30" fill="#333" stroke="#444" stroke-width="1"/>
+  <rect x="20" y="240" width="360" height="30" fill="#333" stroke="#444" stroke-width="1"/>
+  <rect x="20" y="275" width="360" height="3" fill="#dc3545"/>
+</svg>

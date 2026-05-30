@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MyCMS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Themes/Magazine/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">MYCMS MAGAZINE</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    @await Component.InvokeAsync("Menu", new { position = "Main" })
+                </ul>
+                <form class="d-flex" asp-controller="Search" asp-action="Index" method="get">
+                    <input class="form-control me-2 bg-dark text-white border-secondary" type="search" name="q" placeholder="Search...">
+                    <button class="btn btn-danger">Search</button>
+                </form>
+                @await Component.InvokeAsync("LoginPartial")
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    @RenderBody()
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h4 class="fw-bold mb-3">MYCMS MAGAZINE</h4>
+                    <p class="text-white-50 small">Your source for breaking news, in-depth analysis, and compelling stories from around the world.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3">Sections</h5>
+                    <ul class="list-unstyled">
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index" class="text-white-50 text-decoration-none small">Home</a></li>
+                        <li><a asp-area="" asp-controller="Article" asp-action="Index" class="text-white-50 text-decoration-none small">Articles</a></li>
+                        <li><a asp-area="" asp-controller="Page" asp-action="Index" class="text-white-50 text-decoration-none small">About</a></li>
+                        <li><a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="text-white-50 text-decoration-none small">Admin</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3">Connect</h5>
+                    <div class="social-links mb-3">
+                        <a href="#">𝕏</a>
+                        <a href="#">f</a>
+                        <a href="#">in</a>
+                        <a href="#">📷</a>
+                        <a href="#">▶</a>
+                    </div>
+                    <p class="text-white-50 small">contact@mycms.com</p>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <div class="text-center text-white-50 small">
+                &copy; 2026 MyCMS Magazine. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

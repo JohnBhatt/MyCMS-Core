@@ -11,6 +11,7 @@ namespace MyCMS.Core.Interfaces
         Task<List<Article>> GetFeaturedArticlesAsync();
         Task<Article?> GetArticleByIdAsync(Guid id);
         Task<Article?> GetArticleBySlugAsync(string slug);
+        Task<Article?> GetArticleByCategoryAndSlugAsync(string category, string slug);
         Task<Article> CreateArticleAsync(Article article);
         Task<Article> UpdateArticleAsync(Article article);
         Task DeleteArticleAsync(Guid id);
