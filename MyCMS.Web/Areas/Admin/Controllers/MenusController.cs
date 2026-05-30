@@ -7,7 +7,7 @@ using MyCMS.Core.Interfaces;
 namespace MyCMS.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class MenusController : Controller
     {
         private readonly IMenuService _menuService;

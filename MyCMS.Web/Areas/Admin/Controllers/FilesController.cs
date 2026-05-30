@@ -6,7 +6,7 @@ using MyCMS.Core.Interfaces;
 namespace MyCMS.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class FilesController : Controller
     {
         private readonly IFileService _fileService;

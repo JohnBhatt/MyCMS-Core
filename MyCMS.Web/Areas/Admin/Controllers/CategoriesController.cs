@@ -7,7 +7,7 @@ using MyCMS.Core.Interfaces;
 namespace MyCMS.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
         private readonly ICategoryService _categoryService;

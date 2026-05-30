@@ -1,127 +1,181 @@
 
+@model MyCMS.Web.Areas.Admin.Controllers.DashboardStatistics
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "_AdminLayout";
 }
 
+<style>
+    .dashboard-tile {
+        height: 140px;
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+    }
+    .dashboard-tile:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    }
+    .dashboard-tile::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.75) 100%);
+        z-index: 1;
+    }
+    .dashboard-tile .tile-icon {
+        position: absolute;
+        right: -10px;
+        bottom: -20px;
+        font-size: 100px;
+        opacity: 0.15;
+        z-index: 0;
+    }
+    .dashboard-tile .card-body {
+        position: relative;
+        z-index: 2;
+        padding: 1.25rem;
+    }
+    .dashboard-tile .card-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+    .dashboard-tile .display-4 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+    .dashboard-tile .btn-add {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        z-index: 3;
+        transition: transform 0.2s;
+    }
+    .dashboard-tile .btn-add:hover {
+        transform: scale(1.1);
+    }
+    /* Gradient backgrounds */
+    .tile-pages { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .tile-articles { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+    .tile-menus { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .tile-quizzes { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+    .tile-categories { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+    .tile-files { background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); }
+    .tile-users { background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); }
+    .tile-settings { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
+</style>
+
 <h1>Dashboard</h1>
 
-<div class="row">
+<div class="row g-3">
     <div class="col-md-3">
-        <div class="card mb-3 text-center">
-            <div class="card-body position-relative">
-                <a asp-action="Create" asp-controller="Pages" class="btn btn-sm btn-primary position-absolute top-0 end-0 m-2" title="Create New Page">
-                    <i class="bi bi-plus-lg"></i>
-                </a>
-                <a asp-action="Index" asp-controller="Pages" class="text-decoration-none text-dark">
-                    <h5 class="card-title">Pages</h5>
-                    <p class="card-text display-4" id="totalPages">-</p>
-                </a>
+        <div class="card dashboard-tile tile-pages" onclick="location.href='@Url.Action("Index", "Pages", new { area = "Admin" })'">
+            <i class="bi bi-file-earmark-text tile-icon"></i>
+            <a asp-action="Create" asp-controller="Pages" class="btn btn-light btn-add" title="Create New Page" onclick="event.stopPropagation();">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+            <div class="card-body text-center">
+                <h5 class="card-title text-primary">Pages</h5>
+                <p class="card-text display-4">@Model.TotalPages</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card mb-3 text-center">
-            <div class="card-body position-relative">
-                <a asp-action="Create" asp-controller="Articles" class="btn btn-sm btn-success position-absolute top-0 end-0 m-2" title="Create New Article">
-                    <i class="bi bi-plus-lg"></i>
-                </a>
-                <a asp-action="Index" asp-controller="Articles" class="text-decoration-none text-dark">
-                    <h5 class="card-title">Articles</h5>
-                    <p class="card-text display-4" id="totalArticles">-</p>
-                </a>
+        <div class="card dashboard-tile tile-articles" onclick="location.href='@Url.Action("Index", "Articles", new { area = "Admin" })'">
+            <i class="bi bi-journal-text tile-icon"></i>
+            <a asp-action="Create" asp-controller="Articles" class="btn btn-light btn-add" title="Create New Article" onclick="event.stopPropagation();">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+            <div class="card-body text-center">
+                <h5 class="card-title text-success">Articles</h5>
+                <p class="card-text display-4">@Model.TotalArticles</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card mb-3 text-center">
-            <div class="card-body position-relative">
-                <a asp-action="Create" asp-controller="Menus" class="btn btn-sm btn-info position-absolute top-0 end-0 m-2" title="Create New Menu">
-                    <i class="bi bi-plus-lg"></i>
-                </a>
-                <a asp-action="Index" asp-controller="Menus" class="text-decoration-none text-dark">
-                    <h5 class="card-title">Menus</h5>
-                    <p class="card-text display-4" id="totalMenus">-</p>
-                </a>
+        <div class="card dashboard-tile tile-menus" onclick="location.href='@Url.Action("Index", "Menus", new { area = "Admin" })'">
+            <i class="bi bi-menu-button-wide tile-icon"></i>
+            <a asp-action="Create" asp-controller="Menus" class="btn btn-light btn-add" title="Create New Menu" onclick="event.stopPropagation();">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+            <div class="card-body text-center">
+                <h5 class="card-title text-info">Menus</h5>
+                <p class="card-text display-4">@Model.TotalMenus</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card mb-3 text-center">
-            <div class="card-body position-relative">
-                <a asp-action="Create" asp-controller="Quizzes" class="btn btn-sm btn-warning position-absolute top-0 end-0 m-2" title="Create New Quiz">
-                    <i class="bi bi-plus-lg"></i>
-                </a>
-                <a asp-action="Index" asp-controller="Quizzes" class="text-decoration-none text-dark">
-                    <h5 class="card-title">Quizzes</h5>
-                    <p class="card-text display-4" id="totalQuizzes">-</p>
-                </a>
+        <div class="card dashboard-tile tile-quizzes" onclick="location.href='@Url.Action("Index", "Quizzes", new { area = "Admin" })'">
+            <i class="bi bi-question-circle tile-icon"></i>
+            <a asp-action="Create" asp-controller="Quizzes" class="btn btn-light btn-add" title="Create New Quiz" onclick="event.stopPropagation();">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+            <div class="card-body text-center">
+                <h5 class="card-title text-warning">Quizzes</h5>
+                <p class="card-text display-4">@Model.TotalQuizzes</p>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
+<div class="row g-3 mt-2">
     <div class="col-md-3">
-        <div class="card mb-3 text-center">
-            <div class="card-body position-relative">
-                <a asp-action="Create" asp-controller="Categories" class="btn btn-sm btn-secondary position-absolute top-0 end-0 m-2" title="Create New Category">
-                    <i class="bi bi-plus-lg"></i>
-                </a>
-                <a asp-action="Index" asp-controller="Categories" class="text-decoration-none text-dark">
-                    <h5 class="card-title">Categories</h5>
-                    <p class="card-text display-4" id="totalCategories">-</p>
-                </a>
+        <div class="card dashboard-tile tile-categories" onclick="location.href='@Url.Action("Index", "Categories", new { area = "Admin" })'">
+            <i class="bi bi-folder tile-icon"></i>
+            <a asp-action="Create" asp-controller="Categories" class="btn btn-light btn-add" title="Create New Category" onclick="event.stopPropagation();">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+            <div class="card-body text-center">
+                <h5 class="card-title text-secondary">Categories</h5>
+                <p class="card-text display-4">@Model.TotalCategories</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card mb-3 text-center">
-            <div class="card-body position-relative">
-                <a asp-action="Create" asp-controller="Files" class="btn btn-sm btn-dark position-absolute top-0 end-0 m-2" title="Upload New File">
-                    <i class="bi bi-plus-lg"></i>
-                </a>
-                <a asp-action="Index" asp-controller="Files" class="text-decoration-none text-dark">
-                    <h5 class="card-title">Files</h5>
-                    <p class="card-text display-4" id="totalFiles">-</p>
-                </a>
+        <div class="card dashboard-tile tile-files" onclick="location.href='@Url.Action("Index", "Files", new { area = "Admin" })'">
+            <i class="bi bi-upload tile-icon"></i>
+            <a asp-action="Create" asp-controller="Files" class="btn btn-light btn-add" title="Upload New File" onclick="event.stopPropagation();">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+            <div class="card-body text-center">
+                <h5 class="card-title text-dark">Files</h5>
+                <p class="card-text display-4">@Model.TotalFiles</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card mb-3 text-center">
-            <div class="card-body">
-                <a asp-action="Index" asp-controller="Users" class="text-decoration-none text-dark">
-                    <h5 class="card-title">Users</h5>
-                    <p class="card-text display-4" id="totalUsers">-</p>
-                </a>
+        <div class="card dashboard-tile tile-users" onclick="location.href='@Url.Action("Index", "Users", new { area = "Admin" })'">
+            <i class="bi bi-people tile-icon"></i>
+            <div class="card-body text-center">
+                <h5 class="card-title text-primary">Users</h5>
+                <p class="card-text display-4">@Model.TotalUsers</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card mb-3 text-center">
-            <div class="card-body position-relative">
-                <a asp-action="Index" asp-controller="Configuration" class="btn btn-sm btn-outline-primary position-absolute top-0 end-0 m-2" title="Settings">
-                    <i class="bi bi-gear"></i>
-                </a>
-                <a asp-action="Index" asp-controller="Configuration" class="text-decoration-none text-dark">
-                    <h5 class="card-title">Settings</h5>
-                    <p class="card-text h5 mt-4"><i class="bi bi-sliders"></i></p>
-                </a>
+        <div class="card dashboard-tile tile-settings" onclick="location.href='@Url.Action("Index", "Configuration", new { area = "Admin" })'">
+            <i class="bi bi-gear tile-icon"></i>
+            <div class="card-body text-center">
+                <h5 class="card-title text-muted">Settings</h5>
+                <p class="card-text h4 mt-3"><i class="bi bi-sliders"></i></p>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        // Load statistics (placeholder - will be implemented with API calls)
-        document.getElementById('totalPages').textContent = '0';
-        document.getElementById('totalArticles').textContent = '0';
-        document.getElementById('totalMenus').textContent = '0';
-        document.getElementById('totalQuizzes').textContent = '0';
-        document.getElementById('totalCategories').textContent = '0';
-        document.getElementById('totalFiles').textContent = '0';
-        document.getElementById('totalUsers').textContent = '0';
-    </script>
-}

@@ -7,7 +7,7 @@ using MyCMS.Core.Interfaces;
 namespace MyCMS.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class PagesController : Controller
     {
         private readonly IPageService _pageService;
