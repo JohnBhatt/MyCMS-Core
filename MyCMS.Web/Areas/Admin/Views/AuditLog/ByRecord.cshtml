@@ -1,0 +1,104 @@
+@model IEnumerable<MyCMS.Core.Entities.AuditLog>
+@{
+    ViewData["Title"] = "Record Audit History";
+    Layout = "_AdminLayout";
+}
+
+<h1>Audit History</h1>
+<p class="text-muted">
+    Table: <span class="badge bg-secondary">@ViewBag.TableName</span> 
+    Record ID: <code>@ViewBag.RecordId</code>
+</p>
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Audit Log
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No audit history found for this record.
+    </div>
+}
+else
+{
+    <div class="timeline">
+        @foreach (var log in Model.OrderByDescending(l => l.CreatedOn))
+        {
+            <div class="card mb-3 border-@(log.Action switch {
+                "Created" => "success",
+                "Updated" => "warning",
+                "Deleted" => "danger",
+                _ => "secondary"
+            })">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge @(log.Action switch {
+                            "Created" => "bg-success",
+                            "Updated" => "bg-warning text-dark",
+                            "Deleted" => "bg-danger",
+                            _ => "bg-secondary"
+                        }) me-2">@log.Action</span>
+                        <span class="text-muted">@log.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                    </div>
+                    <a asp-action="Details" asp-route-id="@log.Id" class="btn btn-sm btn-primary">
+                        <i class="bi bi-eye"></i> View Details
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <small class="text-muted">Modified By:</small><br />
+                            @if (!string.IsNullOrEmpty(log.ModifiedByUserName))
+                            {
+                                <span>@log.ModifiedByUserName</span>
+                            }
+                            else if (log.ModifiedBy.HasValue)
+                            {
+                                <code>@log.ModifiedBy</code>
+                            }
+                            else
+                            {
+                                <span class="text-muted">System</span>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted">Reason:</small><br />
+                            @(log.ChangeReason ?? "<span class=\"text-muted\">Not specified</span>")
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted">IP Address:</small><br />
+                            <code>@log.IpAddress</code>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(log.OldValues) && log.Action != "Created")
+                    {
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <small class="text-muted">Old Values:</small>
+                                <pre class="bg-light p-2 rounded small"><code>@log.OldValues</code></pre>
+                            </div>
+                            @if (!string.IsNullOrEmpty(log.NewValues))
+                            {
+                                <div class="col-md-6">
+                                    <small class="text-muted">New Values:</small>
+                                    <pre class="bg-light p-2 rounded small"><code>@log.NewValues</code></pre>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else if (!string.IsNullOrEmpty(log.NewValues) && log.Action == "Created")
+                    {
+                        <hr />
+                        <small class="text-muted">Values:</small>
+                        <pre class="bg-light p-2 rounded small"><code>@log.NewValues</code></pre>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}

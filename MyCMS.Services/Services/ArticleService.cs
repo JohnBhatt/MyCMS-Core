@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using MyCMS.Core.Entities;
 using MyCMS.Core.Helpers;
@@ -9,10 +10,12 @@ namespace MyCMS.Services
     public class ArticleService : IArticleService
     {
         private readonly AppDbContext _context;
+        private readonly IAuditService _auditService;
 
-        public ArticleService(AppDbContext context)
+        public ArticleService(AppDbContext context, IAuditService auditService)
         {
             _context = context;
+            _auditService = auditService;
         }
 
         public async Task<List<Article>> GetAllArticlesAsync()
@@ -82,15 +85,26 @@ namespace MyCMS.Services
             article.CreatedOn = DateTime.UtcNow;
             _context.Articles.Add(article);
             await _context.SaveChangesAsync();
+            
+            await _auditService.LogAsync("Articles", article.Id.ToString(), "Created", null,
+                JsonSerializer.Serialize(new { article.Title, article.Slug, article.CategoryId, article.IsPublished }), "Article created");
             return article;
         }
 
         public async Task<Article> UpdateArticleAsync(Article article)
         {
+            var existing = await _context.Articles.FindAsync(article.Id);
+            if (existing == null) throw new InvalidOperationException("Article not found");
+            
+            var oldValues = JsonSerializer.Serialize(new { existing.Title, existing.Slug, existing.CategoryId, existing.IsPublished, existing.IsFeatured });
+            
             article.Slug = SlugHelper.GenerateSlug(article.Slug);
             article.ModifiedOn = DateTime.UtcNow;
             _context.Articles.Update(article);
             await _context.SaveChangesAsync();
+            
+            var newValues = JsonSerializer.Serialize(new { article.Title, article.Slug, article.CategoryId, article.IsPublished, article.IsFeatured });
+            await _auditService.LogAsync("Articles", article.Id.ToString(), "Updated", oldValues, newValues, "Article updated");
             return article;
         }
 
@@ -99,9 +113,12 @@ namespace MyCMS.Services
             var article = await _context.Articles.FindAsync(id);
             if (article != null)
             {
+                var oldValues = JsonSerializer.Serialize(new { article.Title, article.Slug, article.IsPublished });
                 article.IsDeleted = true;
                 article.ModifiedOn = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
+                
+                await _auditService.LogAsync("Articles", id.ToString(), "Deleted", oldValues, null, "Article deleted");
             }
         }
 

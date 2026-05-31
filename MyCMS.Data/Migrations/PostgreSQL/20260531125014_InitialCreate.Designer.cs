@@ -9,18 +9,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MyCMS.Data.Migrations.PostgreSql
+namespace MyCMS.Data.Migrations.PostgreSQL
 {
     [DbContext(typeof(PostgreSqlDbContext))]
-    [Migration("20260507205135_ArticleFeaturedImageOptional")]
-    partial class ArticleFeaturedImageOptional
+    [Migration("20260531125014_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.7")
+                .HasAnnotation("ProductVersion", "10.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -421,9 +421,6 @@ namespace MyCMS.Data.Migrations.PostgreSql
                     b.Property<Guid>("ArticleId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ArticleId1")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -446,11 +443,78 @@ namespace MyCMS.Data.Migrations.PostgreSql
 
                     b.HasIndex("ArticleId");
 
-                    b.HasIndex("ArticleId1");
-
                     b.HasIndex("TagId");
 
                     b.ToTable("ArticleTagMappings");
+                });
+
+            modelBuilder.Entity("MyCMS.Core.Entities.AuditLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ChangeReason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ModifiedByUserName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NewValues")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OldValues")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RecordId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("UserAgent")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
                 });
 
             modelBuilder.Entity("MyCMS.Core.Entities.Configuration", b =>
@@ -670,9 +734,6 @@ namespace MyCMS.Data.Migrations.PostgreSql
                     b.Property<Guid>("MenuId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("MenuId1")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("MenuRemarks")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -698,8 +759,6 @@ namespace MyCMS.Data.Migrations.PostgreSql
                     b.HasKey("Id");
 
                     b.HasIndex("MenuId");
-
-                    b.HasIndex("MenuId1");
 
                     b.HasIndex("ParentMenuItem");
 
@@ -1027,6 +1086,159 @@ namespace MyCMS.Data.Migrations.PostgreSql
                     b.ToTable("QuizQuestions");
                 });
 
+            modelBuilder.Entity("MyCMS.Core.Entities.Setting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEditable")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEncrypted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Settings");
+                });
+
+            modelBuilder.Entity("MyCMS.Core.Entities.Theme", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ColorScheme")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CustomCss")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FolderName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LayoutOptions")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Thumbnail")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Themes");
+                });
+
+            modelBuilder.Entity("MyCMS.Core.Entities.ThemeConfiguration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ThemeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ThemeId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ThemeId");
+
+                    b.HasIndex("ThemeId1");
+
+                    b.ToTable("ThemeConfigurations");
+                });
+
             modelBuilder.Entity("MyCMS.Core.Entities.Upload", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1134,11 +1346,13 @@ namespace MyCMS.Data.Migrations.PostgreSql
 
             modelBuilder.Entity("MyCMS.Core.Entities.Article", b =>
                 {
-                    b.HasOne("MyCMS.Core.Entities.ArticleCategory", null)
+                    b.HasOne("MyCMS.Core.Entities.ArticleCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("MyCMS.Core.Entities.ArticleCategory", b =>
@@ -1152,14 +1366,10 @@ namespace MyCMS.Data.Migrations.PostgreSql
             modelBuilder.Entity("MyCMS.Core.Entities.ArticleTagMapping", b =>
                 {
                     b.HasOne("MyCMS.Core.Entities.Article", null)
-                        .WithMany()
+                        .WithMany("ArticleTagMappings")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("MyCMS.Core.Entities.Article", null)
-                        .WithMany("ArticleTagMappings")
-                        .HasForeignKey("ArticleId1");
 
                     b.HasOne("MyCMS.Core.Entities.ArticleTag", null)
                         .WithMany()
@@ -1171,14 +1381,10 @@ namespace MyCMS.Data.Migrations.PostgreSql
             modelBuilder.Entity("MyCMS.Core.Entities.MenuItem", b =>
                 {
                     b.HasOne("MyCMS.Core.Entities.Menu", null)
-                        .WithMany()
+                        .WithMany("MenuItems")
                         .HasForeignKey("MenuId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("MyCMS.Core.Entities.Menu", null)
-                        .WithMany("MenuItems")
-                        .HasForeignKey("MenuId1");
 
                     b.HasOne("MyCMS.Core.Entities.MenuItem", null)
                         .WithMany()
@@ -1235,6 +1441,21 @@ namespace MyCMS.Data.Migrations.PostgreSql
                     b.HasOne("MyCMS.Core.Entities.Quiz", null)
                         .WithMany("Questions")
                         .HasForeignKey("QuizId1");
+                });
+
+            modelBuilder.Entity("MyCMS.Core.Entities.ThemeConfiguration", b =>
+                {
+                    b.HasOne("MyCMS.Core.Entities.Theme", null)
+                        .WithMany()
+                        .HasForeignKey("ThemeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyCMS.Core.Entities.Theme", "Theme")
+                        .WithMany()
+                        .HasForeignKey("ThemeId1");
+
+                    b.Navigation("Theme");
                 });
 
             modelBuilder.Entity("MyCMS.Core.Entities.Article", b =>

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using MyCMS.Core.Entities;
 using MyCMS.Core.Interfaces;
@@ -8,10 +9,12 @@ namespace MyCMS.Services
     public class PageService : IPageService
     {
         private readonly AppDbContext _context;
+        private readonly IAuditService _auditService;
 
-        public PageService(AppDbContext context)
+        public PageService(AppDbContext context, IAuditService auditService)
         {
             _context = context;
+            _auditService = auditService;
         }
 
         public async Task<List<Page>> GetAllPagesAsync()
@@ -35,14 +38,25 @@ namespace MyCMS.Services
             page.CreatedOn = DateTime.UtcNow;
             _context.Pages.Add(page);
             await _context.SaveChangesAsync();
+            
+            await _auditService.LogAsync("Pages", page.Id.ToString(), "Created", null,
+                JsonSerializer.Serialize(new { page.PageTitle, page.PageURL, page.IsHomePage }), "Page created");
             return page;
         }
 
         public async Task<Page> UpdatePageAsync(Page page)
         {
+            var existing = await _context.Pages.FindAsync(page.Id);
+            if (existing == null) throw new InvalidOperationException("Page not found");
+            
+            var oldValues = JsonSerializer.Serialize(new { existing.PageTitle, existing.PageURL, existing.IsHomePage, existing.PageBody });
+            
             page.ModifiedOn = DateTime.UtcNow;
             _context.Pages.Update(page);
             await _context.SaveChangesAsync();
+            
+            var newValues = JsonSerializer.Serialize(new { page.PageTitle, page.PageURL, page.IsHomePage, page.PageBody });
+            await _auditService.LogAsync("Pages", page.Id.ToString(), "Updated", oldValues, newValues, "Page updated");
             return page;
         }
 
@@ -51,9 +65,12 @@ namespace MyCMS.Services
             var page = await _context.Pages.FindAsync(id);
             if (page != null)
             {
+                var oldValues = JsonSerializer.Serialize(new { page.PageTitle, page.PageURL, page.IsHomePage });
                 page.IsDeleted = true;
                 page.ModifiedOn = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
+                
+                await _auditService.LogAsync("Pages", id.ToString(), "Deleted", oldValues, null, "Page deleted");
             }
         }
 
@@ -64,6 +81,9 @@ namespace MyCMS.Services
             if (existingHomePage != null)
             {
                 existingHomePage.IsHomePage = false;
+                await _auditService.LogAsync("Pages", existingHomePage.Id.ToString(), "Updated", 
+                    JsonSerializer.Serialize(new { IsHomePage = true }),
+                    JsonSerializer.Serialize(new { IsHomePage = false }), "Homepage changed");
             }
 
             // Set new homepage
@@ -73,6 +93,10 @@ namespace MyCMS.Services
                 page.IsHomePage = true;
                 page.ModifiedOn = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
+                
+                await _auditService.LogAsync("Pages", id.ToString(), "Updated",
+                    JsonSerializer.Serialize(new { IsHomePage = false }),
+                    JsonSerializer.Serialize(new { IsHomePage = true }), "Set as homepage");
             }
             return page;
         }

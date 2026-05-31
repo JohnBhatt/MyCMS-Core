@@ -1,0 +1,87 @@
+@model IEnumerable<MyCMS.Core.Entities.AuditLog>
+@{
+    ViewData["Title"] = "Setting Audit Log";
+    Layout = "_AdminLayout";
+}
+
+<h1>Audit Log: @ViewBag.SettingKey</h1>
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to Settings</a>
+    <a asp-action="Edit" asp-route-key="@ViewBag.SettingKey" class="btn btn-primary">Edit Setting</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Action</th>
+                    <th>Old Values</th>
+                    <th>New Values</th>
+                    <th>Reason</th>
+                    <th>Modified By</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td>@log.CreatedOn.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            <span class="badge @(log.Action switch {
+                                "Created" => "bg-success",
+                                "Updated" => "bg-warning",
+                                "Deleted" => "bg-danger",
+                                _ => "bg-secondary"
+                            })">@log.Action</span>
+                        </td>
+                        <td>
+                            @if (log.OldValues?.Length > 30)
+                            {
+                                <span title="@log.OldValues">@(log.OldValues.Substring(0, 30))...</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">@(log.OldValues ?? "-")</span>
+                            }
+                        </td>
+                        <td>
+                            @if (log.NewValues?.Length > 30)
+                            {
+                                <span title="@log.NewValues">@(log.NewValues.Substring(0, 30))...</span>
+                            }
+                            else
+                            {
+                                <span>@(log.NewValues ?? "-")</span>
+                            }
+                        </td>
+                        <td>@log.ChangeReason</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(log.ModifiedByUserName))
+                            {
+                                <span>@log.ModifiedByUserName</span>
+                            }
+                            else if (log.ModifiedBy.HasValue)
+                            {
+                                <span class="text-muted">@log.ModifiedBy.Value.ToString().Substring(0, 8)...</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">System</span>
+                            }
+                        </td>
+                        <td><code class="small">@log.IpAddress</code></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info">No audit history found for this setting.</div>
+        }
+    </div>
+</div>

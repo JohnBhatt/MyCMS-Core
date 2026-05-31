@@ -424,6 +424,8 @@ $RECYCLE.BIN/
 .env.local
 .env.*.local
 
-# User secrets
+# User secrets - ignore all appsettings to prevent committing passwords
+appsettings.json
 appsettings.Development.json
 appsettings.Local.json
+appsettings.Production.json

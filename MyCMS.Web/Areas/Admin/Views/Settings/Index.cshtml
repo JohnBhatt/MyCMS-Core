@@ -1,0 +1,121 @@
+@model IEnumerable<MyCMS.Core.Entities.Setting>
+@{
+    ViewData["Title"] = "Settings";
+    Layout = "_AdminLayout";
+}
+
+<h1>Settings</h1>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a asp-action="Create" class="btn btn-primary">Add New Setting</a>
+    </div>
+    <div class="col-md-6 text-end">
+        <div class="btn-group">
+            <a asp-action="Index" class="btn btn-outline-secondary @(ViewBag.CurrentCategory == null ? "active" : "")">All</a>
+            @foreach (var cat in ViewBag.Categories)
+            {
+                <a asp-action="Index" asp-route-category="@cat" class="btn btn-outline-secondary @(ViewBag.CurrentCategory == cat ? "active" : "")">@cat</a>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Category</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                    <th>Editable</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><code>@item.Key</code></td>
+                        <td><span class="badge bg-info">@item.Category</span></td>
+                        <td>
+                            @if (item.IsEncrypted)
+                            {
+                                <span class="text-muted">***encrypted***</span>
+                            }
+                            else if (item.Value?.Length > 50)
+                            {
+                                <span title="@item.Value">@(item.Value.Substring(0, 50))...</span>
+                            }
+                            else
+                            {
+                                <span>@item.Value</span>
+                            }
+                        </td>
+                        <td>@item.Description</td>
+                        <td>
+                            @if (item.IsEditable)
+                            {
+                                <span class="badge bg-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">No</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-key="@item.Key" class="btn btn-sm btn-primary">Edit</a>
+                            <a asp-action="AuditLog" asp-route-key="@item.Key" class="btn btn-sm btn-info">History</a>
+                            @if (item.IsEditable)
+                            {
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-key="@item.Key">Delete</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Delete" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Setting</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="key" id="deleteKey" />
+                    <div class="mb-3">
+                        <label class="form-label">Reason for deletion (for audit log)</label>
+                        <input type="text" name="changeReason" class="form-control" placeholder="e.g., No longer needed" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('deleteModal').addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var key = button.getAttribute('data-key');
+            document.getElementById('deleteKey').value = key;
+        });
+    </script>
+}

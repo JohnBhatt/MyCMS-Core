@@ -162,11 +162,67 @@ MyCMS-Core/
         └── uploads/
 ```
 
-## Creating the First Admin User
+## Initial Setup & Default Admin
 
-1. Navigate to `/Identity/Account/Register` to create a new user
-2. After registration, manually update the user's role in the database or use the Admin panel's User Management to assign admin role
-3. Alternatively, create a user directly via the Admin panel's User Management page
+MyCMS automatically seeds default data on first startup:
+
+### Default Roles
+- **Admin** - Full access to admin panel
+- **User** - Standard user for public features (comments, likes, favorites)
+
+### Default Admin User
+On first application startup, a default admin user is created automatically:
+- **Email**: `admin@mycms.com`
+- **Password**: Configurable via `appsettings.json` (see `DefaultAdminPassword` setting)
+
+**⚠️ IMPORTANT: Change the default admin password immediately after first login!**
+
+### Configuring Default Admin Password
+
+Add to `appsettings.json` before first run:
+
+```json
+{
+  "DefaultAdminPassword": "YourSecurePassword123!",
+  "DatabaseProvider": "PostgreSQL",
+  "ConnectionStrings": {
+    "PostgreSQL": "..."
+  }
+}
+```
+
+**⚠️ Security Note**: Add `appsettings.json` to your `.gitignore` to prevent committing sensitive configuration:
+
+```gitignore
+# Ignore sensitive config
+appsettings.json
+appsettings.Production.json
+```
+
+Instead, provide a `appsettings.example.json` in your repo with placeholder values.
+
+If `DefaultAdminPassword` is not configured, the application will generate a secure random password and display it prominently in the console logs on first startup.
+
+### Manual Admin Creation (Alternative)
+
+If you prefer to create your own admin user:
+
+1. Register a new account at `/Identity/Account/Register`
+2. Access the database and run:
+   ```sql
+   INSERT INTO "AspNetUserRoles" ("UserId", "RoleId")
+   SELECT u."Id", r."Id"
+   FROM "AspNetUsers" u, "AspNetRoles" r
+   WHERE u."Email" = 'your-email@example.com'
+   AND r."Name" = 'Admin';
+   ```
+
+### Default Data Seeded on First Run
+
+- **Roles**: Admin, User
+- **Admin User**: admin@mycms.com (password from config or console output)
+- **Default Menu**: "Main Menu" for primary navigation
+- **Themes**: Minimal (active by default), Blog, Magazine, Modern
 
 ## Development
 

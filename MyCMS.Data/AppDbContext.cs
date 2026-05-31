@@ -28,6 +28,8 @@ namespace MyCMS.Data
         public DbSet<OpenGraphTag> OpenGraphTags { get; set; }
         public DbSet<Theme> Themes { get; set; }
         public DbSet<ThemeConfiguration> ThemeConfigurations { get; set; }
+        public DbSet<Setting> Settings { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

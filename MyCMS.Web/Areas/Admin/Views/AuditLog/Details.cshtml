@@ -1,0 +1,174 @@
+@model MyCMS.Core.Entities.AuditLog
+@{
+    ViewData["Title"] = "Audit Log Details";
+    Layout = "_AdminLayout";
+}
+
+<h1>Audit Log Details</h1>
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Audit Log
+    </a>
+    <a asp-action="ByRecord" asp-route-tableName="@Model.TableName" asp-route-recordId="@Model.RecordId" class="btn btn-info">
+        <i class="bi bi-list"></i> View Record History
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <!-- Main Details Card -->
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <span class="badge @(Model.Action switch {
+                        "Created" => "bg-success",
+                        "Updated" => "bg-warning text-dark",
+                        "Deleted" => "bg-danger",
+                        _ => "bg-secondary"
+                    }) fs-6">@Model.Action</span>
+                    @Model.TableName - @Model.RecordId
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="fw-bold" width="150">Date/Time:</td>
+                                <td>@Model.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss UTC")</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Action:</td>
+                                <td>@Model.Action</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Table:</td>
+                                <td>@Model.TableName</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Record ID:</td>
+                                <td><code>@Model.RecordId</code></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="fw-bold" width="150">Modified By:</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(Model.ModifiedByUserName))
+                                    {
+                                        <span>@Model.ModifiedByUserName</span>
+                                    }
+                                    else if (Model.ModifiedBy.HasValue)
+                                    {
+                                        <code>@Model.ModifiedBy</code>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">System</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">User ID:</td>
+                                <td><code>@(Model.ModifiedBy?.ToString() ?? "N/A")</code></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">IP Address:</td>
+                                <td><code>@Model.IpAddress</code></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Change Reason:</td>
+                                <td>@(Model.ChangeReason ?? "<span class=\"text-muted\">Not specified</span>")</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Values Comparison -->
+        @if (Model.Action == "Updated" || Model.Action == "Deleted")
+        {
+            <div class="card border-danger mb-3">
+                <div class="card-header bg-danger text-white">
+                    <i class="bi bi-file-earmark-minus"></i> Old Values (Before Change)
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.OldValues))
+                    {
+                        <pre class="bg-light p-3 rounded"><code>@Model.OldValues</code></pre>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No previous values recorded</p>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (Model.Action == "Created" || Model.Action == "Updated")
+        {
+            <div class="card border-success mb-3">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-file-earmark-plus"></i> New Values (After Change)
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.NewValues))
+                    {
+                        <pre class="bg-light p-3 rounded"><code>@Model.NewValues</code></pre>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No new values recorded</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4">
+        <!-- Technical Details -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-gear"></i> Technical Details
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <td class="fw-bold">Audit ID:</td>
+                        <td><code>@Model.Id</code></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">User Agent:</td>
+                        <td class="small text-break">@Model.UserAgent</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Created On:</td>
+                        <td>@Model.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <i class="bi bi-lightning"></i> Quick Actions
+            </div>
+            <div class="card-body">
+                <a asp-action="ByUser" asp-route-userId="@Model.ModifiedBy" class="btn btn-outline-primary w-100 mb-2">
+                    <i class="bi bi-person"></i> View User's Activity
+                </a>
+                <a asp-action="ByRecord" asp-route-tableName="@Model.TableName" asp-route-recordId="@Model.RecordId" class="btn btn-outline-info w-100 mb-2">
+                    <i class="bi bi-clock-history"></i> View Record History
+                </a>
+                <a asp-action="Index" asp-route-tableName="@Model.TableName" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-table"></i> View @Model.TableName Logs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

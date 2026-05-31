@@ -20,7 +20,7 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     CategoryName = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     CatDesc = table.Column<string>(type: "text", nullable: false),
                     ParentCategory = table.Column<Guid>(type: "uuid", nullable: true),
-                    CategoryImage = table.Column<string>(type: "text", nullable: false),
+                    CategoryImage = table.Column<string>(type: "text", nullable: true),
                     Slug = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
@@ -103,6 +103,31 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AuditLogs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TableName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    RecordId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Action = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    OldValues = table.Column<string>(type: "text", nullable: false),
+                    NewValues = table.Column<string>(type: "text", nullable: false),
+                    ChangeReason = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ModifiedByUserName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    IpAddress = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    UserAgent = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -236,6 +261,54 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                 });
 
             migrationBuilder.CreateTable(
+                name: "Settings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Key = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: false),
+                    Category = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    IsEncrypted = table.Column<bool>(type: "boolean", nullable: false),
+                    IsEditable = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Settings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Themes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    DisplayName = table.Column<string>(type: "text", nullable: false),
+                    FolderName = table.Column<string>(type: "text", nullable: false),
+                    Thumbnail = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CustomCss = table.Column<string>(type: "text", nullable: true),
+                    ColorScheme = table.Column<string>(type: "text", nullable: true),
+                    LayoutOptions = table.Column<string>(type: "text", nullable: true),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Themes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Uploads",
                 columns: table => new
                 {
@@ -267,7 +340,7 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     Slug = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
                     MetaDescription = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
                     MetaKeywords = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
-                    FeaturedImage = table.Column<string>(type: "text", nullable: false),
+                    FeaturedImage = table.Column<string>(type: "text", nullable: true),
                     Content = table.Column<string>(type: "text", nullable: false),
                     Tags = table.Column<string>(type: "text", nullable: false),
                     ViewCount = table.Column<long>(type: "bigint", nullable: false),
@@ -411,7 +484,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     ParentMenuItem = table.Column<Guid>(type: "uuid", nullable: true),
                     ItemPosition = table.Column<int>(type: "integer", nullable: false),
                     Visibility = table.Column<bool>(type: "boolean", nullable: false),
-                    MenuId1 = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -433,11 +505,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                         principalTable: "Menus",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MenuItems_Menus_MenuId1",
-                        column: x => x.MenuId1,
-                        principalTable: "Menus",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -500,13 +567,43 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                 });
 
             migrationBuilder.CreateTable(
+                name: "ThemeConfigurations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ThemeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ThemeId1 = table.Column<Guid>(type: "uuid", nullable: true),
+                    Key = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ThemeConfigurations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ThemeConfigurations_Themes_ThemeId",
+                        column: x => x.ThemeId,
+                        principalTable: "Themes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ThemeConfigurations_Themes_ThemeId1",
+                        column: x => x.ThemeId1,
+                        principalTable: "Themes",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ArticleTagMappings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ArticleId = table.Column<Guid>(type: "uuid", nullable: false),
                     TagId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ArticleId1 = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -528,11 +625,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                         principalTable: "Articles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ArticleTagMappings_Articles_ArticleId1",
-                        column: x => x.ArticleId1,
-                        principalTable: "Articles",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -615,11 +707,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                 column: "ArticleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ArticleTagMappings_ArticleId1",
-                table: "ArticleTagMappings",
-                column: "ArticleId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ArticleTagMappings_TagId",
                 table: "ArticleTagMappings",
                 column: "TagId");
@@ -667,11 +754,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                 column: "MenuId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MenuItems_MenuId1",
-                table: "MenuItems",
-                column: "MenuId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_MenuItems_ParentMenuItem",
                 table: "MenuItems",
                 column: "ParentMenuItem");
@@ -710,6 +792,16 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                 name: "IX_QuizQuestions_QuizId1",
                 table: "QuizQuestions",
                 column: "QuizId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ThemeConfigurations_ThemeId",
+                table: "ThemeConfigurations",
+                column: "ThemeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ThemeConfigurations_ThemeId1",
+                table: "ThemeConfigurations",
+                column: "ThemeId1");
         }
 
         /// <inheritdoc />
@@ -734,6 +826,9 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "AuditLogs");
+
+            migrationBuilder.DropTable(
                 name: "Configurations");
 
             migrationBuilder.DropTable(
@@ -747,6 +842,12 @@ namespace MyCMS.Data.Migrations.PostgreSQL
 
             migrationBuilder.DropTable(
                 name: "QuizAnswers");
+
+            migrationBuilder.DropTable(
+                name: "Settings");
+
+            migrationBuilder.DropTable(
+                name: "ThemeConfigurations");
 
             migrationBuilder.DropTable(
                 name: "Uploads");
@@ -771,6 +872,9 @@ namespace MyCMS.Data.Migrations.PostgreSQL
 
             migrationBuilder.DropTable(
                 name: "QuizOptions");
+
+            migrationBuilder.DropTable(
+                name: "Themes");
 
             migrationBuilder.DropTable(
                 name: "ArticleCategories");

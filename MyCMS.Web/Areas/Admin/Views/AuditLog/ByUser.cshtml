@@ -1,0 +1,121 @@
+@model IEnumerable<MyCMS.Core.Entities.AuditLog>
+@{
+    ViewData["Title"] = "User Activity";
+    Layout = "_AdminLayout";
+}
+
+<h1>User Activity Log</h1>
+<p class="text-muted">
+    User: <span class="fw-bold">@ViewBag.UserName</span>
+    <span class="text-muted">(@ViewBag.UserId)</span>
+</p>
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Audit Log
+    </a>
+</div>
+
+<!-- Activity Summary -->
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Count()</h5>
+                <p class="card-text">Total Actions</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Count(l => l.Action == "Created")</h5>
+                <p class="card-text">Created</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-dark bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Count(l => l.Action == "Updated")</h5>
+                <p class="card-text">Updated</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Count(l => l.Action == "Deleted")</h5>
+                <p class="card-text">Deleted</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity by Table -->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="bi bi-table"></i> Activity by Table
+    </div>
+    <div class="card-body">
+        <div class="row">
+            @foreach (var tableGroup in Model.GroupBy(l => l.TableName).OrderByDescending(g => g.Count()))
+            {
+                <div class="col-md-3 mb-2">
+                    <span class="badge bg-secondary">@tableGroup.Key</span>
+                    <span class="ms-2">@tableGroup.Count() changes</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Activity Timeline -->
+<h4>Recent Activity</h4>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No activity found for this user.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date/Time</th>
+                    <th>Action</th>
+                    <th>Table</th>
+                    <th>Record ID</th>
+                    <th>Reason</th>
+                    <th>IP Address</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in Model.OrderByDescending(l => l.CreatedOn))
+                {
+                    <tr>
+                        <td>@log.CreatedOn.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            <span class="badge @(log.Action switch {
+                                "Created" => "bg-success",
+                                "Updated" => "bg-warning text-dark",
+                                "Deleted" => "bg-danger",
+                                _ => "bg-secondary"
+                            })">@log.Action</span>
+                        </td>
+                        <td><span class="badge bg-secondary">@log.TableName</span></td>
+                        <td><code class="small">@log.RecordId.Substring(0, Math.Min(8, log.RecordId.Length))...</code></td>
+                        <td>@(log.ChangeReason ?? "-")</td>
+                        <td><code class="small">@log.IpAddress</code></td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@log.Id" class="btn btn-sm btn-primary">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

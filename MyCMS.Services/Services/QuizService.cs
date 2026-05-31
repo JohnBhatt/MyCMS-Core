@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using MyCMS.Core.Entities;
 using MyCMS.Core.Interfaces;
@@ -8,10 +9,12 @@ namespace MyCMS.Services
     public class QuizService : IQuizService
     {
         private readonly AppDbContext _context;
+        private readonly IAuditService _auditService;
 
-        public QuizService(AppDbContext context)
+        public QuizService(AppDbContext context, IAuditService auditService)
         {
             _context = context;
+            _auditService = auditService;
         }
 
         public async Task<List<Quiz>> GetAllQuizzesAsync()
@@ -30,14 +33,25 @@ namespace MyCMS.Services
             quiz.CreatedOn = DateTime.UtcNow;
             _context.Quizzes.Add(quiz);
             await _context.SaveChangesAsync();
+            
+            await _auditService.LogAsync("Quizzes", quiz.Id.ToString(), "Created", null,
+                JsonSerializer.Serialize(new { quiz.Title, quiz.Description, quiz.StartTime, quiz.EndTime }), "Quiz created");
             return quiz;
         }
 
         public async Task<Quiz> UpdateQuizAsync(Quiz quiz)
         {
+            var existing = await _context.Quizzes.FindAsync(quiz.Id);
+            if (existing == null) throw new InvalidOperationException("Quiz not found");
+            
+            var oldValues = JsonSerializer.Serialize(new { existing.Title, existing.Description, existing.StartTime, existing.EndTime, existing.PassingScore });
+            
             quiz.ModifiedOn = DateTime.UtcNow;
             _context.Quizzes.Update(quiz);
             await _context.SaveChangesAsync();
+            
+            var newValues = JsonSerializer.Serialize(new { quiz.Title, quiz.Description, quiz.StartTime, quiz.EndTime, quiz.PassingScore });
+            await _auditService.LogAsync("Quizzes", quiz.Id.ToString(), "Updated", oldValues, newValues, "Quiz updated");
             return quiz;
         }
 
@@ -46,9 +60,12 @@ namespace MyCMS.Services
             var quiz = await _context.Quizzes.FindAsync(id);
             if (quiz != null)
             {
+                var oldValues = JsonSerializer.Serialize(new { quiz.Title, quiz.Description });
                 quiz.IsDeleted = true;
                 quiz.ModifiedOn = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
+                
+                await _auditService.LogAsync("Quizzes", id.ToString(), "Deleted", oldValues, null, "Quiz deleted");
             }
         }
 
@@ -66,14 +83,25 @@ namespace MyCMS.Services
             question.CreatedOn = DateTime.UtcNow;
             _context.QuizQuestions.Add(question);
             await _context.SaveChangesAsync();
+            
+            await _auditService.LogAsync("QuizQuestions", question.Id.ToString(), "Created", null,
+                JsonSerializer.Serialize(new { question.QuestionText, question.QuestionType, question.QuizId }), "Question added");
             return question;
         }
 
         public async Task<QuizQuestion> UpdateQuizQuestionAsync(QuizQuestion question)
         {
+            var existing = await _context.QuizQuestions.FindAsync(question.Id);
+            if (existing == null) throw new InvalidOperationException("Question not found");
+            
+            var oldValues = JsonSerializer.Serialize(new { existing.QuestionText, existing.QuestionType, existing.QuestionOrder });
+            
             question.ModifiedOn = DateTime.UtcNow;
             _context.QuizQuestions.Update(question);
             await _context.SaveChangesAsync();
+            
+            var newValues = JsonSerializer.Serialize(new { question.QuestionText, question.QuestionType, question.QuestionOrder });
+            await _auditService.LogAsync("QuizQuestions", question.Id.ToString(), "Updated", oldValues, newValues, "Question updated");
             return question;
         }
 
@@ -82,9 +110,12 @@ namespace MyCMS.Services
             var question = await _context.QuizQuestions.FindAsync(id);
             if (question != null)
             {
+                var oldValues = JsonSerializer.Serialize(new { question.QuestionText, question.QuizId });
                 question.IsDeleted = true;
                 question.ModifiedOn = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
+                
+                await _auditService.LogAsync("QuizQuestions", id.ToString(), "Deleted", oldValues, null, "Question deleted");
             }
         }
 
@@ -102,14 +133,25 @@ namespace MyCMS.Services
             option.CreatedOn = DateTime.UtcNow;
             _context.QuizOptions.Add(option);
             await _context.SaveChangesAsync();
+            
+            await _auditService.LogAsync("QuizOptions", option.Id.ToString(), "Created", null,
+                JsonSerializer.Serialize(new { option.OptionText, option.IsCorrect, option.QuestionId }), "Option added");
             return option;
         }
 
         public async Task<QuizOption> UpdateQuizOptionAsync(QuizOption option)
         {
+            var existing = await _context.QuizOptions.FindAsync(option.Id);
+            if (existing == null) throw new InvalidOperationException("Option not found");
+            
+            var oldValues = JsonSerializer.Serialize(new { existing.OptionText, existing.IsCorrect, existing.OptionOrder });
+            
             option.ModifiedOn = DateTime.UtcNow;
             _context.QuizOptions.Update(option);
             await _context.SaveChangesAsync();
+            
+            var newValues = JsonSerializer.Serialize(new { option.OptionText, option.IsCorrect, option.OptionOrder });
+            await _auditService.LogAsync("QuizOptions", option.Id.ToString(), "Updated", oldValues, newValues, "Option updated");
             return option;
         }
 
@@ -118,9 +160,12 @@ namespace MyCMS.Services
             var option = await _context.QuizOptions.FindAsync(id);
             if (option != null)
             {
+                var oldValues = JsonSerializer.Serialize(new { option.OptionText, option.QuestionId });
                 option.IsDeleted = true;
                 option.ModifiedOn = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
+                
+                await _auditService.LogAsync("QuizOptions", id.ToString(), "Deleted", oldValues, null, "Option deleted");
             }
         }
 

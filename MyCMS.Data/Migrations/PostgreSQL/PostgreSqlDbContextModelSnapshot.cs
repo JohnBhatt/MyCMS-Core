@@ -445,6 +445,75 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     b.ToTable("ArticleTagMappings");
                 });
 
+            modelBuilder.Entity("MyCMS.Core.Entities.AuditLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ChangeReason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ModifiedByUserName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NewValues")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OldValues")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RecordId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("UserAgent")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
+
             modelBuilder.Entity("MyCMS.Core.Entities.Configuration", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1014,6 +1083,57 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     b.ToTable("QuizQuestions");
                 });
 
+            modelBuilder.Entity("MyCMS.Core.Entities.Setting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEditable")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEncrypted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Settings");
+                });
+
             modelBuilder.Entity("MyCMS.Core.Entities.Theme", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1071,60 +1191,6 @@ namespace MyCMS.Data.Migrations.PostgreSQL
                     b.HasKey("Id");
 
                     b.ToTable("Themes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Clean, typography-focused design with elegant serif headings and lots of whitespace.",
-                            DisplayName = "Minimal",
-                            FolderName = "Minimal",
-                            IsActive = true,
-                            IsDefault = true,
-                            IsDeleted = false,
-                            Name = "Minimal",
-                            Thumbnail = "/Themes/Minimal/assets/thumbnail.svg"
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Classic blog layout with sidebar, blue accent, and card-based article grid.",
-                            DisplayName = "Blog",
-                            FolderName = "Blog",
-                            IsActive = false,
-                            IsDefault = false,
-                            IsDeleted = false,
-                            Name = "Blog",
-                            Thumbnail = "/Themes/Blog/assets/thumbnail.svg"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Bold magazine style with dark hero section, featured posts, and trending sidebar.",
-                            DisplayName = "Magazine",
-                            FolderName = "Magazine",
-                            IsActive = false,
-                            IsDefault = false,
-                            IsDeleted = false,
-                            Name = "Magazine",
-                            Thumbnail = "/Themes/Magazine/assets/thumbnail.svg"
-                        },
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Vibrant gradients (purple/pink), rounded cards, and configurable category grid with icons.",
-                            DisplayName = "Modern",
-                            FolderName = "Modern",
-                            IsActive = false,
-                            IsDefault = false,
-                            IsDeleted = false,
-                            Name = "Modern",
-                            Thumbnail = "/Themes/Modern/assets/thumbnail.svg"
-                        });
                 });
 
             modelBuilder.Entity("MyCMS.Core.Entities.ThemeConfiguration", b =>

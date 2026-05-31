@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using MyCMS.Core.Entities;
 using MyCMS.Core.Interfaces;
 using MyCMS.Data;
+using MyCMS.Data.Interfaces;
+using MyCMS.Data.Services;
 using MyCMS.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -82,6 +84,10 @@ builder.Services.AddScoped<IRssFeedService, RssFeedService>();
 builder.Services.AddScoped<IAmpService, AmpService>();
 builder.Services.AddScoped<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<ISettingService, SettingService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -121,5 +127,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+// Seed database
+using (var scope = app.Services.CreateScope())
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+    await dbInitializer.SeedAsync();
+}
 
 app.Run();

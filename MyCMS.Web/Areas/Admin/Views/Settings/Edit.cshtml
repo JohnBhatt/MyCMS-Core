@@ -1,0 +1,73 @@
+@model MyCMS.Core.Entities.Setting
+@{
+    ViewData["Title"] = "Edit Setting";
+    Layout = "_AdminLayout";
+}
+
+<h1>Edit Setting</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>@Model.Key</h5>
+                </div>
+                <div class="card-body">
+                    <input type="hidden" asp-for="Key" />
+                    <input type="hidden" asp-for="Category" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Setting Key</label>
+                        <input type="text" class="form-control" value="@Model.Key" disabled />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <input type="text" class="form-control" value="@Model.Category" disabled />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Value" class="form-label">Value</label>
+                        @if (Model.IsEncrypted)
+                        {
+                            <input asp-for="Value" type="password" class="form-control" />
+                        }
+                        else
+                        {
+                            <textarea asp-for="Value" class="form-control" rows="3"></textarea>
+                        }
+                        <span asp-validation-for="Value" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="IsEncrypted" type="checkbox" class="form-check-input" />
+                        <label asp-for="IsEncrypted" class="form-check-label">Encrypt this value</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Change Reason (for audit log)</label>
+                        <input type="text" name="changeReason" class="form-control" placeholder="e.g., Updated Facebook URL" required />
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="Index" asp-route-category="@Model.Category" class="btn btn-secondary">Cancel</a>
+                    <a asp-action="AuditLog" asp-route-key="@Model.Key" class="btn btn-info float-end">View History</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using MyCMS.Core.Entities;
 using MyCMS.Core.Interfaces;
@@ -8,10 +9,12 @@ namespace MyCMS.Services
     public class ConfigurationService : IConfigurationService
     {
         private readonly AppDbContext _context;
+        private readonly IAuditService _auditService;
 
-        public ConfigurationService(AppDbContext context)
+        public ConfigurationService(AppDbContext context, IAuditService auditService)
         {
             _context = context;
+            _auditService = auditService;
         }
 
         public async Task<Configuration?> GetConfigurationAsync(string sectionName = "Default")
@@ -27,6 +30,12 @@ namespace MyCMS.Services
 
             if (existing != null)
             {
+                var oldValues = JsonSerializer.Serialize(new 
+                { 
+                    existing.SiteName, existing.Slogan, existing.ThemeName, 
+                    existing.FacebookLink, existing.TwitterLink 
+                });
+                
                 existing.SiteName = configuration.SiteName;
                 existing.Slogan = configuration.Slogan;
                 existing.BaseURL = configuration.BaseURL;
@@ -57,6 +66,14 @@ namespace MyCMS.Services
                 existing.AMPublisherName = configuration.AMPublisherName;
                 existing.ModifiedOn = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
+                
+                var newValues = JsonSerializer.Serialize(new 
+                { 
+                    configuration.SiteName, configuration.Slogan, configuration.ThemeName,
+                    configuration.FacebookLink, configuration.TwitterLink 
+                });
+                await _auditService.LogAsync("Configurations", existing.Id.ToString(), "Updated", oldValues, newValues, "Configuration updated");
+                
                 return existing;
             }
             else
@@ -65,6 +82,9 @@ namespace MyCMS.Services
                 configuration.CreatedOn = DateTime.UtcNow;
                 _context.Configurations.Add(configuration);
                 await _context.SaveChangesAsync();
+                
+                await _auditService.LogAsync("Configurations", configuration.Id.ToString(), "Created", null,
+                    JsonSerializer.Serialize(new { configuration.SiteName, configuration.SectionName }), "Configuration created");
                 return configuration;
             }
         }

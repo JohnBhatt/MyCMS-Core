@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,13 @@ namespace MyCMS.Services
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly IAuditService _auditService;
 
-        public FileService(AppDbContext context, IWebHostEnvironment environment)
+        public FileService(AppDbContext context, IWebHostEnvironment environment, IAuditService auditService)
         {
             _context = context;
             _environment = environment;
+            _auditService = auditService;
         }
 
         public async Task<List<Upload>> GetAllUploadsAsync()
@@ -34,6 +37,9 @@ namespace MyCMS.Services
             upload.CreatedOn = DateTime.UtcNow;
             _context.Uploads.Add(upload);
             await _context.SaveChangesAsync();
+            
+            await _auditService.LogAsync("Uploads", upload.Id.ToString(), "Created", null,
+                JsonSerializer.Serialize(new { upload.DocumentName, upload.DocumentType, upload.FilePath }), "File uploaded");
             return upload;
         }
 
@@ -42,9 +48,12 @@ namespace MyCMS.Services
             var upload = await _context.Uploads.FindAsync(id);
             if (upload != null)
             {
+                var oldValues = JsonSerializer.Serialize(new { upload.DocumentName, upload.FilePath });
                 upload.IsDeleted = true;
                 upload.ModifiedOn = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
+                
+                await _auditService.LogAsync("Uploads", id.ToString(), "Deleted", oldValues, null, "File deleted");
             }
         }
 
